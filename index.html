@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>minimum max</title>
+    <title>minimum pro</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Fonts: Inter & JetBrains Mono for Code/Nicknames -->
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     
     <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Firebase SDKs (Compat) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -30,26 +30,25 @@
                     },
                     colors: {
                         dark: {
-                            bg: '#050505',
-                            surface: '#0f0f0f',
-                            border: '#1f1f1f',
-                            active: '#1a1a1a'
+                            bg: '#0f0f0f',         /* Чуть светлее черного для глубины */
+                            surface: '#181818',    /* Поверхности */
+                            surfaceHover: '#232323',
+                            border: '#2a2a2a',
+                            accent: '#ffffff',
+                            msgOwn: '#3b82f6',     /* Telegram blue style, или оставить ч/б? Сделаем стильно ч/б + акцент */
+                            msgOwnBg: '#ffffff',
+                            msgOwnText: '#000000',
                         }
                     },
                     animation: {
-                        'fade-in': 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'shake': 'shake 0.4s cubic-bezier(.36,.07,.19,.97) both',
+                        'fade-in': 'fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'scale-in': 'scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                     },
                     keyframes: {
                         fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
-                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
-                        shake: {
-                            '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
-                            '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
-                            '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
-                            '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
-                        }
+                        slideUp: { '0%': { transform: 'translateY(15px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        scaleIn: { '0%': { transform: 'scale(0.95)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } }
                     }
                 }
             }
@@ -57,211 +56,263 @@
     </script>
 
     <style>
-        body { background-color: #050505; color: #e5e5e5; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+        body { 
+            background-color: #0f0f0f; 
+            color: #e5e5e5; 
+            overflow: hidden; 
+            -webkit-tap-highlight-color: transparent; 
+        }
         
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
         
-        /* Glass & Blur Effects */
+        /* Glass Effect */
         .glass-panel { 
-            background: rgba(15, 15, 15, 0.8); 
-            backdrop-filter: blur(24px); 
-            -webkit-backdrop-filter: blur(24px); 
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(24, 24, 24, 0.75); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-header {
+            background: rgba(24, 24, 24, 0.85); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .glass-input {
+        /* Inputs */
+        .input-modern {
             background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            color: white;
+            transition: all 0.2s ease;
         }
-        .glass-input:focus {
-            background: rgba(255, 255, 255, 0.07);
-            border-color: rgba(255, 255, 255, 0.3);
+        .input-modern:focus {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.2);
             outline: none;
         }
 
-        /* Message Bubbles */
+        /* Message Bubbles - Telegram Style */
         .msg-own { 
             background: #ffffff; 
             color: #000000; 
-            border-radius: 20px 20px 4px 20px; 
-            box-shadow: 0 2px 10px rgba(255,255,255,0.1);
+            border-radius: 16px 16px 2px 16px; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
         .msg-other { 
-            background: #1c1c1c; 
+            background: #232323; 
             color: #ffffff; 
-            border-radius: 20px 20px 20px 4px; 
-            border: 1px solid #2a2a2a;
+            border-radius: 16px 16px 16px 2px; 
+        }
+        
+        /* Avatar Upload Overlay */
+        .avatar-hover-edit {
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .group:hover .avatar-hover-edit {
+            opacity: 1;
         }
 
-        /* Input specific for Setup */
-        .input-huge {
-            font-size: 2.5rem;
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid #333;
-            border-radius: 0;
-            padding: 10px 0;
-            text-align: center;
-            font-family: 'JetBrains Mono', monospace;
-            color: white;
-            transition: border-color 0.3s;
-        }
-        .input-huge:focus {
-            outline: none;
-            border-color: white;
-        }
-        .input-huge::placeholder {
-            color: #333;
-        }
+        /* Utils */
+        .center-abs { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
     </style>
 </head>
 <body class="h-screen w-screen font-sans selection:bg-white selection:text-black">
 
-    <!-- CANVAS BG -->
-    <canvas id="bgCanvas" class="absolute inset-0 z-0 opacity-20 pointer-events-none"></canvas>
+    <!-- BACKGROUND -->
+    <div class="fixed inset-0 z-0 bg-gradient-to-br from-[#0f0f0f] via-[#121212] to-[#050505]"></div>
+    <canvas id="bgCanvas" class="absolute inset-0 z-0 opacity-10 pointer-events-none"></canvas>
 
-    <!-- VIEW 1: AUTH -->
+    <!-- --- AUTH VIEW --- -->
     <div id="viewAuth" class="absolute inset-0 z-50 flex flex-col items-center justify-center transition-all duration-500">
-        <div class="flex flex-col items-center animate-slide-up">
-            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(255,255,255,0.15)] mb-8">
-                <i data-lucide="infinity" class="w-10 h-10 text-black"></i>
+        <div class="flex flex-col items-center animate-slide-up relative z-10">
+            <div class="w-24 h-24 bg-white/5 border border-white/10 rounded-3xl flex items-center justify-center shadow-2xl backdrop-blur-md mb-8 ring-1 ring-white/10">
+                <i data-lucide="infinity" class="w-12 h-12 text-white"></i>
             </div>
-            <h1 class="text-4xl font-light tracking-tighter mb-2">minimum</h1>
-            <p class="text-gray-500 text-sm tracking-[0.2em] uppercase mb-12 font-medium">Identity System</p>
+            <h1 class="text-5xl font-extralight tracking-tighter mb-3">minimum</h1>
+            <p class="text-gray-500 text-xs tracking-[0.3em] uppercase mb-16 font-semibold">Pro Identity System</p>
             
-            <button id="btnGoogle" class="group relative overflow-hidden rounded-full bg-white text-black px-10 py-4 font-medium transition-all hover:scale-105 active:scale-95 flex items-center gap-3 shadow-xl">
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors"></div>
-                <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M21.35 11.1h-9.17v2.73h6.51c-.33 3.8-3.5 5.4-6.5 5.4C8.92 19.23 6 16.05 6 12c0-4.17 3-7.2 7.2-7.2 2.74 0 4.93.99 6.2 2.18l2.7-2.7c-2.4-2.2-5.9-3.4-8.9-3.4C4.8 1 0 5.1 0 12c0 6.9 4.8 11 11.9 11 6.8 0 11.6-4.7 11.6-11.3 0-.8-.1-1.5-.2-2.3z"/></svg>
-                <span>Войти через Google</span>
+            <button id="btnGoogle" class="group relative overflow-hidden rounded-2xl bg-white text-black px-8 py-4 font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-4 shadow-[0_0_40px_rgba(255,255,255,0.1)]">
+                <div class="absolute inset-0 bg-gradient-to-r from-gray-100 to-white opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <svg class="w-5 h-5 relative z-10" viewBox="0 0 24 24"><path fill="currentColor" d="M21.35 11.1h-9.17v2.73h6.51c-.33 3.8-3.5 5.4-6.5 5.4C8.92 19.23 6 16.05 6 12c0-4.17 3-7.2 7.2-7.2 2.74 0 4.93.99 6.2 2.18l2.7-2.7c-2.4-2.2-5.9-3.4-8.9-3.4C4.8 1 0 5.1 0 12c0 6.9 4.8 11 11.9 11 6.8 0 11.6-4.7 11.6-11.3 0-.8-.1-1.5-.2-2.3z"/></svg>
+                <span class="relative z-10">Войти через Google</span>
             </button>
         </div>
     </div>
 
-    <!-- VIEW 2: SETUP USERNAME -->
-    <div id="viewSetup" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-dark-bg transition-all duration-500 hidden opacity-0">
+    <!-- --- SETUP VIEW --- -->
+    <div id="viewSetup" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#0f0f0f] transition-all duration-500 hidden opacity-0">
         <div class="w-full max-w-md p-8 flex flex-col items-center animate-slide-up">
-            <div class="text-center mb-8">
-                <h2 class="text-2xl font-medium mb-2">Создай личность</h2>
-                <p class="text-gray-500 text-sm">Придумай уникальный ID.</p>
+            <h2 class="text-3xl font-medium mb-2 tracking-tight">Создание профиля</h2>
+            <p class="text-gray-500 text-sm mb-12">Выберите уникальный идентификатор</p>
+            
+            <div class="w-full relative mb-4">
+                <span class="absolute left-0 top-1/2 -translate-y-1/2 text-3xl text-gray-600 font-mono font-light">@</span>
+                <input id="inputUsername" type="text" class="w-full bg-transparent border-b-2 border-gray-800 focus:border-white text-center text-3xl py-4 pl-8 font-mono outline-none transition-colors placeholder-gray-800 text-white" placeholder="username" maxlength="12" autocomplete="off" spellcheck="false">
             </div>
             
-            <div class="w-full relative mb-2">
-                <span class="absolute left-0 top-1/2 -translate-y-1/2 text-2xl text-gray-600 font-mono">@</span>
-                <input id="inputUsername" type="text" class="input-huge w-full pl-8" placeholder="username" maxlength="10" autocomplete="off" spellcheck="false">
-            </div>
-            
-            <div class="flex flex-col items-center gap-2 mb-8 h-6">
-                <p id="setupError" class="text-red-500 text-xs font-mono hidden"></p>
-                <p class="text-gray-600 text-[10px] uppercase tracking-widest">a-z, 0-9, _ (max 10)</p>
-            </div>
+            <p id="setupError" class="text-red-500 text-xs font-mono h-4 mb-8 opacity-0 transition-opacity">Error message</p>
 
-            <button id="btnFinishSetup" class="w-full bg-white text-black rounded-xl py-4 font-medium hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                Продолжить
+            <button id="btnFinishSetup" class="w-full bg-white text-black rounded-xl py-4 font-semibold hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                Начать общение
             </button>
         </div>
     </div>
 
-    <!-- VIEW 3: MAIN APP -->
+    <!-- --- APP VIEW --- -->
     <div id="viewApp" class="absolute inset-0 z-10 flex opacity-0 pointer-events-none transition-opacity duration-700">
         
         <!-- SIDEBAR -->
-        <div id="appSidebar" class="w-full md:w-[400px] h-full glass-panel flex flex-col z-20 absolute md:relative border-r border-dark-border">
-            <!-- App Header -->
-            <div class="p-5 flex justify-between items-center">
-                <div class="flex items-center gap-3 cursor-pointer group" id="btnOpenProfile">
-                    <div class="relative">
-                        <img id="myAvatar" class="w-10 h-10 rounded-full bg-dark-surface object-cover border border-white/10 group-hover:border-white/40 transition-colors">
-                        <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-black"></div>
+        <div id="appSidebar" class="w-full md:w-[420px] h-full glass-panel flex flex-col z-20 absolute md:relative shadow-2xl">
+            <!-- Header -->
+            <div class="p-4 flex justify-between items-center glass-header border-b-0 bg-transparent">
+                <div class="flex items-center gap-3 cursor-pointer p-2 rounded-xl hover:bg-white/5 transition-colors group" id="btnOpenSettings">
+                    <div class="relative w-10 h-10">
+                        <img id="myAvatar" class="w-full h-full rounded-full object-cover border border-white/10 group-hover:border-white/30 transition-all bg-dark-surface">
+                        <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-[#181818]"></div>
                     </div>
                     <div>
-                        <div id="myDisplayName" class="text-sm font-semibold leading-tight">Loading...</div>
+                        <div id="myDisplayName" class="text-sm font-semibold leading-tight text-white/90">...</div>
                         <div id="myUsernameDisplay" class="text-xs text-gray-500 font-mono">@...</div>
                     </div>
                 </div>
-                <div class="flex gap-2">
-                    <button id="btnNewChat" class="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition-transform">
-                        <i data-lucide="plus" class="w-5 h-5"></i>
-                    </button>
-                </div>
+                <button id="btnNewChat" class="w-10 h-10 rounded-full bg-white/5 hover:bg-white text-white hover:text-black flex items-center justify-center transition-all border border-white/10 hover:border-transparent">
+                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                </button>
             </div>
 
             <!-- Search -->
-            <div class="px-5 pb-2">
-                <div class="bg-dark-surface rounded-xl flex items-center px-4 py-3 border border-dark-border focus-within:border-white/20 transition-colors">
-                    <i data-lucide="search" class="w-4 h-4 text-gray-500 mr-3"></i>
-                    <input id="searchChats" type="text" placeholder="Поиск" class="bg-transparent border-none outline-none text-sm text-white w-full placeholder-gray-600">
+            <div class="px-4 pb-2">
+                <div class="bg-dark-surface rounded-xl flex items-center px-3 py-2.5 border border-dark-border focus-within:border-white/30 transition-all group">
+                    <i data-lucide="search" class="w-4 h-4 text-gray-500 group-focus-within:text-white mr-3 transition-colors"></i>
+                    <input id="searchChats" type="text" placeholder="Поиск" class="bg-transparent border-none outline-none text-sm text-white w-full placeholder-gray-600 font-medium">
                 </div>
             </div>
 
             <!-- Chat List -->
-            <div id="listChats" class="flex-1 overflow-y-auto px-3 py-2 space-y-1">
+            <div id="listChats" class="flex-1 overflow-y-auto px-2 py-2 space-y-0.5 custom-scrollbar">
                 <!-- Chat Items -->
             </div>
         </div>
 
         <!-- CHAT AREA -->
-        <div id="appChat" class="w-full h-full flex flex-col bg-dark-bg absolute md:relative transform translate-x-full md:translate-x-0 transition-transform duration-500 ease-in-out z-30">
+        <div id="appChat" class="w-full h-full flex flex-col bg-[#0f0f0f] absolute md:relative transform translate-x-full md:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] z-30">
             
             <!-- Chat Header -->
-            <div id="chatHeader" class="h-[72px] glass-panel border-b border-dark-border flex items-center justify-between px-6 z-20 hidden">
-                <div class="flex items-center gap-4">
-                    <button id="btnBack" class="md:hidden -ml-2 p-2 text-gray-400 hover:text-white"><i data-lucide="arrow-left" class="w-6 h-6"></i></button>
-                    <img id="chatAvatar" class="w-9 h-9 rounded-full bg-dark-surface object-cover border border-white/10">
+            <div id="chatHeader" class="h-[70px] glass-header flex items-center justify-between px-4 md:px-6 z-20 hidden">
+                <div class="flex items-center gap-3 md:gap-4 cursor-pointer hover:opacity-80 transition-opacity">
+                    <button id="btnBack" class="md:hidden -ml-2 p-2 text-gray-400 hover:text-white"><i data-lucide="chevron-left" class="w-7 h-7"></i></button>
+                    <img id="chatAvatar" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-dark-surface object-cover border border-white/10">
                     <div>
-                        <h3 id="chatName" class="text-sm font-semibold text-white">User</h3>
-                        <p id="chatUsername" class="text-xs text-gray-500 font-mono">@user</p>
+                        <h3 id="chatName" class="text-sm md:text-[15px] font-semibold text-white">User</h3>
+                        <p id="chatStatus" class="text-xs text-blue-400">в сети</p>
                     </div>
                 </div>
-                <button class="text-gray-500 hover:text-white transition-colors"><i data-lucide="more-horizontal" class="w-5 h-5"></i></button>
+                <button class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/5 text-gray-400 hover:text-white transition-colors">
+                    <i data-lucide="more-vertical" class="w-5 h-5"></i>
+                </button>
             </div>
 
             <!-- Messages -->
-            <div id="chatMessages" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-4 custom-scrollbar relative hidden">
+            <div id="chatMessages" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-1 custom-scrollbar relative hidden bg-[#0f0f0f] bg-[radial-gradient(#1a1a1a_1px,transparent_1px)] [background-size:16px_16px]">
                 <!-- Messages go here -->
             </div>
 
             <!-- Empty State -->
-            <div id="chatEmpty" class="absolute inset-0 flex flex-col items-center justify-center text-gray-600">
-                <div class="w-20 h-20 bg-dark-surface rounded-full flex items-center justify-center mb-4 border border-dark-border">
-                    <i data-lucide="message-square-dashed" class="w-8 h-8 opacity-50"></i>
+            <div id="chatEmpty" class="absolute inset-0 flex flex-col items-center justify-center text-gray-600 select-none">
+                <div class="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-6 border border-white/5">
+                    <i data-lucide="message-square" class="w-10 h-10 opacity-30"></i>
                 </div>
-                <p class="text-sm font-medium">Выберите чат для начала</p>
+                <p class="text-sm font-medium bg-white/5 px-4 py-1.5 rounded-full border border-white/5">Выберите чат для начала</p>
             </div>
 
             <!-- Input -->
-            <div id="chatInputBar" class="p-6 hidden">
-                <div class="glass-input rounded-[24px] p-2 flex items-end gap-2 shadow-2xl bg-black/40">
-                    <textarea id="inputMsg" rows="1" placeholder="Сообщение..." class="w-full bg-transparent border-none outline-none text-white py-3 px-4 resize-none max-h-32 text-sm placeholder-gray-600 custom-scrollbar"></textarea>
-                    <button id="btnSend" class="p-3 bg-white text-black rounded-full hover:scale-105 active:scale-95 transition-all shadow-lg shrink-0 disabled:opacity-50 disabled:scale-100">
-                        <i data-lucide="arrow-up" class="w-5 h-5"></i>
+            <div id="chatInputBar" class="p-4 md:p-6 hidden bg-gradient-to-t from-[#0f0f0f] to-transparent">
+                <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-[20px] p-2 flex items-end gap-2 shadow-xl relative z-20">
+                    <button class="p-2.5 text-gray-500 hover:text-white transition-colors"><i data-lucide="paperclip" class="w-5 h-5"></i></button>
+                    <textarea id="inputMsg" rows="1" placeholder="Написать сообщение..." class="w-full bg-transparent border-none outline-none text-white py-2.5 px-2 resize-none max-h-32 text-[15px] placeholder-gray-600 custom-scrollbar leading-relaxed"></textarea>
+                    <button id="btnSend" class="p-2.5 bg-white text-black rounded-xl hover:bg-gray-200 active:scale-95 transition-all shadow-lg shrink-0 disabled:opacity-50 disabled:scale-100 mb-0.5">
+                        <i data-lucide="send" class="w-5 h-5 ml-0.5"></i>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: NEW CHAT / SEARCH -->
-    <div id="modalSearch" class="fixed inset-0 z-[60] bg-black/90 backdrop-blur-sm flex items-start justify-center pt-24 opacity-0 pointer-events-none transition-all duration-300">
-        <div class="w-full max-w-lg bg-dark-surface border border-dark-border rounded-2xl shadow-2xl overflow-hidden transform scale-95 transition-all" id="modalSearchContent">
-            <div class="p-4 border-b border-dark-border flex items-center gap-3">
+    <!-- --- MODALS --- -->
+
+    <!-- New Chat Modal -->
+    <div id="modalSearch" class="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm flex items-start justify-center pt-24 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="w-full max-w-lg bg-[#181818] border border-[#2a2a2a] rounded-2xl shadow-2xl overflow-hidden transform scale-95 transition-all mx-4" id="modalSearchContent">
+            <div class="p-4 border-b border-[#2a2a2a] flex items-center gap-3">
                 <i data-lucide="search" class="w-5 h-5 text-gray-500"></i>
-                <input id="inputSearchUser" type="text" placeholder="Поиск по @username..." class="bg-transparent border-none outline-none text-white flex-1 font-mono text-sm h-10">
-                <button id="btnCloseSearch" class="p-2 bg-dark-active rounded-full hover:bg-white/10 text-gray-400"><i data-lucide="x" class="w-4 h-4"></i></button>
+                <input id="inputSearchUser" type="text" placeholder="Поиск людей (@username)" class="bg-transparent border-none outline-none text-white flex-1 font-mono text-sm h-10">
+                <button id="btnCloseSearch" class="p-2 bg-[#2a2a2a] rounded-full hover:bg-white/10 text-gray-400 transition-colors"><i data-lucide="x" class="w-4 h-4"></i></button>
             </div>
-            <div id="resultList" class="max-h-[60vh] overflow-y-auto p-2">
-                <!-- Results -->
+            <div id="resultList" class="max-h-[60vh] overflow-y-auto p-2 min-h-[100px]">
                 <div class="text-center py-8 text-gray-600 text-xs">Введите @username для поиска</div>
             </div>
         </div>
     </div>
 
+    <!-- Settings Modal -->
+    <div id="modalSettings" class="fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
+        <div class="w-full max-w-md bg-[#181818] border border-[#2a2a2a] rounded-3xl shadow-2xl overflow-hidden transform scale-95 transition-all mx-4 relative">
+            
+            <!-- Header with Cover-like feel -->
+            <div class="h-24 bg-gradient-to-r from-gray-800 to-[#1a1a1a] relative">
+                <button id="btnCloseSettings" class="absolute top-4 right-4 p-2 bg-black/20 rounded-full hover:bg-black/40 text-white transition-colors backdrop-blur-md"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+
+            <!-- Avatar & Main Info -->
+            <div class="px-6 relative -mt-12 flex flex-col items-center">
+                <div class="relative group cursor-pointer w-24 h-24">
+                    <img id="settingsAvatar" class="w-24 h-24 rounded-full bg-[#181818] object-cover border-4 border-[#181818] shadow-lg">
+                    <div class="absolute inset-0 bg-black/50 rounded-full border-4 border-[#181818] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all backdrop-blur-[2px]">
+                        <i data-lucide="camera" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <!-- Hidden File Input -->
+                    <input type="file" id="fileAvatar" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
+                </div>
+                
+                <h2 class="mt-3 text-xl font-semibold text-white" id="settingsNameDisplay">Name</h2>
+                <p class="text-gray-500 text-sm font-mono mb-6" id="settingsUsernameDisplay">@username</p>
+            </div>
+
+            <!-- Form -->
+            <div class="px-6 pb-8 space-y-4">
+                <div>
+                    <label class="text-xs text-gray-500 uppercase font-semibold tracking-wider ml-1">Отображаемое имя</label>
+                    <input id="editDisplayName" type="text" class="w-full input-modern p-3 mt-1 text-sm font-medium">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-500 uppercase font-semibold tracking-wider ml-1">Bio</label>
+                    <input id="editBio" type="text" class="w-full input-modern p-3 mt-1 text-sm text-gray-300">
+                </div>
+                
+                <div class="pt-4 flex gap-3">
+                    <button id="btnLogout" class="flex-1 py-3 rounded-xl bg-[#2a2a2a] text-red-400 font-medium hover:bg-red-500/10 hover:text-red-400 transition-colors text-sm">Выйти</button>
+                    <button id="btnSaveSettings" class="flex-[2] py-3 rounded-xl bg-white text-black font-semibold hover:bg-gray-200 transition-colors text-sm">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white text-black px-6 py-3 rounded-full shadow-2xl z-[100] translate-y-20 opacity-0 transition-all duration-300 font-medium text-sm flex items-center gap-2">
+        <i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i>
+        <span id="toastMsg">Saved</span>
+    </div>
+
     <script>
-        // --- 1. CONFIG ---
+        // --- CONFIG ---
         const firebaseConfig = {
           apiKey: "AIzaSyDuP_aYZpqJ-Y8LINCIywCFw3G2ZYVExv4",
           authDomain: "msgr-minimum.firebaseapp.com",
@@ -277,38 +328,44 @@
         let activeChatId = null;
         let chatsUnsubscribe = null;
         let msgsUnsubscribe = null;
-
-        // --- 2. INIT & ROUTING ---
+        
+        // --- INIT ---
         const init = () => {
-            lucide.createIcons();
             initCanvas();
-
             if (typeof firebase === 'undefined') return console.error("Firebase SDK fail");
             
             app = firebase.initializeApp(firebaseConfig);
             auth = firebase.auth();
             db = firebase.firestore();
 
+            // Persistence
+            auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
                     currentUser = user;
-                    // Check if profile exists and has username
                     const doc = await db.collection('users').doc(user.uid).get();
-                    
                     if (doc.exists && doc.data().username) {
-                        // User Ready -> Go to App
                         switchView('viewApp');
                         initAppLogic(doc.data());
                     } else {
-                        // Setup Needed -> Go to Setup
                         switchView('viewSetup');
-                        document.getElementById('viewAuth').classList.add('hidden'); // Hide Login
+                        document.getElementById('viewAuth').classList.add('hidden');
                     }
                 } else {
                     currentUser = null;
                     switchView('viewAuth');
                 }
             });
+
+            // UI Listeners
+            document.getElementById('btnOpenSettings').onclick = openSettings;
+            document.getElementById('btnCloseSettings').onclick = closeSettings;
+            document.getElementById('fileAvatar').onchange = handleAvatarUpload;
+            document.getElementById('btnSaveSettings').onclick = saveSettings;
+            document.getElementById('btnLogout').onclick = () => {
+                if(confirm('Выйти из аккаунта?')) auth.signOut().then(() => location.reload());
+            };
         };
 
         const switchView = (viewId) => {
@@ -323,85 +380,67 @@
                     setTimeout(() => el.classList.add('hidden'), 500);
                 }
             });
+            lucide.createIcons();
         };
 
-        // --- 3. REGISTRATION LOGIC ---
+        // --- AUTH & SETUP ---
         const btnGoogle = document.getElementById('btnGoogle');
         const btnFinishSetup = document.getElementById('btnFinishSetup');
         const inputUsername = document.getElementById('inputUsername');
         const setupError = document.getElementById('setupError');
 
-        btnGoogle.onclick = () => {
-            auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => alert(e.message));
-        };
+        btnGoogle.onclick = () => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => alert(e.message));
 
-        // Username Validation & Save
         inputUsername.addEventListener('input', (e) => {
-            let val = e.target.value.toLowerCase();
-            // Force regex replace for invalid chars
-            val = val.replace(/[^a-z0-9_]/g, '');
-            if (val.length > 10) val = val.substring(0, 10);
+            let val = e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '').substring(0, 12);
             e.target.value = val;
-            
-            setupError.classList.add('hidden');
+            setupError.style.opacity = '0';
         });
 
         btnFinishSetup.onclick = async () => {
             const username = inputUsername.value;
-            if (username.length < 3) {
-                showSetupError("Минимум 3 символа");
-                return;
-            }
+            if (username.length < 3) return showSetupError("Минимум 3 символа");
 
             btnFinishSetup.disabled = true;
             btnFinishSetup.innerText = "Проверка...";
 
-            // Check uniqueness (Simple check: query users where username == input)
-            // Note: In production, requires index. For now, we trust the write/rules logic or simple query.
             const check = await db.collection('users').where('username', '==', username).get();
             if (!check.empty) {
                 showSetupError("Этот @username уже занят");
                 btnFinishSetup.disabled = false;
-                btnFinishSetup.innerText = "Продолжить";
+                btnFinishSetup.innerText = "Начать общение";
                 return;
             }
 
-            // Save Profile
             try {
-                await db.collection('users').doc(currentUser.uid).set({
+                const userData = {
                     uid: currentUser.uid,
                     displayName: currentUser.displayName,
                     email: currentUser.email,
                     photoURL: currentUser.photoURL,
                     username: username,
-                    bio: "minimum user",
+                    bio: "User of minimum pro",
                     createdAt: Date.now()
-                }, { merge: true }); // Merge ensures we don't overwrite if partial data existed
-                
-                // Proceed
-                window.location.reload(); // Refresh to trigger auth check again clean
+                };
+                await db.collection('users').doc(currentUser.uid).set(userData, { merge: true });
+                location.reload(); 
             } catch (e) {
-                showSetupError("Ошибка сохранения: " + e.message);
+                showSetupError("Ошибка: " + e.message);
                 btnFinishSetup.disabled = false;
             }
         };
 
         const showSetupError = (msg) => {
             setupError.innerText = msg;
-            setupError.classList.remove('hidden');
-            const box = document.querySelector('#viewSetup > div');
-            box.classList.remove('animate-shake');
-            void box.offsetWidth; // trigger reflow
-            box.classList.add('animate-shake');
+            setupError.style.opacity = '1';
         };
 
-        // --- 4. APP LOGIC ---
-        
-        const initAppLogic = (userData) => {
-            // Setup Profile Header
-            document.getElementById('myAvatar').src = userData.photoURL;
-            document.getElementById('myDisplayName').innerText = userData.displayName;
-            document.getElementById('myUsernameDisplay').innerText = "@" + userData.username;
+        // --- MAIN APP ---
+        let userDataCache = {};
+
+        const initAppLogic = (myData) => {
+            userDataCache = myData;
+            updateProfileUI(myData);
 
             // Load Chats
             if (chatsUnsubscribe) chatsUnsubscribe();
@@ -409,17 +448,20 @@
                 .where('participants', 'array-contains', currentUser.uid)
                 .onSnapshot(renderChatList);
 
-            // New Chat Modal
+            // New Chat / Search
             const modal = document.getElementById('modalSearch');
             document.getElementById('btnNewChat').onclick = () => {
                 modal.classList.remove('opacity-0', 'pointer-events-none');
+                modal.querySelector('div').classList.remove('scale-95');
+                modal.querySelector('div').classList.add('scale-100');
                 document.getElementById('inputSearchUser').focus();
             };
             document.getElementById('btnCloseSearch').onclick = () => {
                 modal.classList.add('opacity-0', 'pointer-events-none');
+                modal.querySelector('div').classList.remove('scale-100');
+                modal.querySelector('div').classList.add('scale-95');
             };
 
-            // Search Logic
             document.getElementById('inputSearchUser').oninput = debounce(async (e) => {
                 const term = e.target.value.toLowerCase().replace('@', '');
                 const list = document.getElementById('resultList');
@@ -433,7 +475,7 @@
 
                 list.innerHTML = '';
                 if (snap.empty) {
-                    list.innerHTML = '<div class="text-center text-gray-600 py-4">Никого не найдено</div>';
+                    list.innerHTML = '<div class="text-center text-gray-600 py-4 text-sm">Никого не найдено</div>';
                     return;
                 }
 
@@ -441,11 +483,11 @@
                     const u = doc.data();
                     if (u.uid === currentUser.uid) return;
                     const el = document.createElement('div');
-                    el.className = 'flex items-center gap-3 p-3 hover:bg-white/5 rounded-xl cursor-pointer transition-colors';
+                    el.className = 'flex items-center gap-4 p-3 hover:bg-white/5 rounded-xl cursor-pointer transition-colors';
                     el.innerHTML = `
-                        <img src="${u.photoURL}" class="w-10 h-10 rounded-full bg-gray-800">
+                        <img src="${u.photoURL}" class="w-10 h-10 rounded-full bg-[#232323] object-cover">
                         <div>
-                            <div class="font-medium text-white">${u.displayName}</div>
+                            <div class="font-medium text-white text-sm">${u.displayName}</div>
                             <div class="text-xs text-gray-500 font-mono">@${u.username}</div>
                         </div>
                     `;
@@ -454,72 +496,150 @@
                 });
             }, 500);
 
-            // Chat Input
-            const sendBtn = document.getElementById('btnSend');
+            // Chat Input Auto-resize
             const inputMsg = document.getElementById('inputMsg');
-            
-            const doSend = async () => {
-                const txt = inputMsg.value.trim();
-                if (!txt || !activeChatId) return;
-                inputMsg.value = '';
-                
-                await db.collection('chats').doc(activeChatId).collection('messages').add({
-                    text: txt,
-                    senderId: currentUser.uid,
-                    timestamp: Date.now()
-                });
-                
-                await db.collection('chats').doc(activeChatId).update({
-                    lastMessage: txt,
-                    lastMessageTime: Date.now(),
-                    lastSenderId: currentUser.uid
-                });
-            };
-
-            sendBtn.onclick = doSend;
-            inputMsg.onkeydown = (e) => { if(e.key==='Enter' && !e.shiftKey) { e.preventDefault(); doSend(); }};
-            
-            // Logout
-            document.getElementById('btnOpenProfile').onclick = () => {
-                if(confirm('Выйти из аккаунта?')) {
-                    auth.signOut();
-                    window.location.reload();
-                }
-            };
+            inputMsg.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+            inputMsg.addEventListener('keydown', (e) => {
+                if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+            });
+            document.getElementById('btnSend').onclick = sendMessage;
         };
 
+        const updateProfileUI = (data) => {
+            document.getElementById('myAvatar').src = data.photoURL;
+            document.getElementById('myDisplayName').innerText = data.displayName;
+            document.getElementById('myUsernameDisplay').innerText = "@" + data.username;
+        };
+
+        // --- SETTINGS LOGIC ---
+        let newAvatarBase64 = null;
+
+        function openSettings() {
+            const m = document.getElementById('modalSettings');
+            m.classList.remove('opacity-0', 'pointer-events-none');
+            m.querySelector('div').classList.remove('scale-95');
+            m.querySelector('div').classList.add('scale-100');
+            
+            // Populate
+            document.getElementById('settingsAvatar').src = userDataCache.photoURL;
+            document.getElementById('settingsNameDisplay').innerText = userDataCache.displayName;
+            document.getElementById('settingsUsernameDisplay').innerText = '@' + userDataCache.username;
+            
+            document.getElementById('editDisplayName').value = userDataCache.displayName;
+            document.getElementById('editBio').value = userDataCache.bio || '';
+            newAvatarBase64 = null;
+        }
+
+        function closeSettings() {
+            const m = document.getElementById('modalSettings');
+            m.classList.add('opacity-0', 'pointer-events-none');
+            m.querySelector('div').classList.remove('scale-100');
+            m.querySelector('div').classList.add('scale-95');
+        }
+
+        async function handleAvatarUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Compress Image
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const MAX_WIDTH = 256; // Limit size for Firestore
+                    const scale = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scale;
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    
+                    newAvatarBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                    document.getElementById('settingsAvatar').src = newAvatarBase64;
+                };
+            };
+        }
+
+        async function saveSettings() {
+            const btn = document.getElementById('btnSaveSettings');
+            btn.innerText = '...';
+            
+            const newName = document.getElementById('editDisplayName').value.trim();
+            const newBio = document.getElementById('editBio').value.trim();
+            
+            const updates = {};
+            if (newName) updates.displayName = newName;
+            updates.bio = newBio;
+            if (newAvatarBase64) updates.photoURL = newAvatarBase64;
+            
+            try {
+                await db.collection('users').doc(currentUser.uid).update(updates);
+                userDataCache = { ...userDataCache, ...updates };
+                updateProfileUI(userDataCache);
+                closeSettings();
+                showToast("Профиль обновлен");
+            } catch (e) {
+                alert("Ошибка: " + e.message);
+            }
+            btn.innerText = 'Сохранить';
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            t.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000);
+        }
+
+        // --- CHAT LIST ---
         const renderChatList = async (snap) => {
             const list = document.getElementById('listChats');
-            list.innerHTML = '';
-            
+            // Don't wipe list completely to avoid flicker, smart update would be better but keeping it simple for now
+            // Just sorting
             const chats = [];
             snap.forEach(doc => chats.push({id: doc.id, ...doc.data()}));
             chats.sort((a,b) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0));
 
+            list.innerHTML = '';
+            
             for (const chat of chats) {
                 const otherId = chat.participants.find(id => id !== currentUser.uid);
-                // Fetch user data (simple cache could be added here)
-                const userSnap = await db.collection('users').doc(otherId).get();
-                if (!userSnap.exists) continue;
-                const otherUser = userSnap.data();
+                // Simple cache for users to reduce reads
+                let otherUser = sessionStorage.getItem('u_'+otherId);
+                if (otherUser) {
+                    otherUser = JSON.parse(otherUser);
+                } else {
+                    const userSnap = await db.collection('users').doc(otherId).get();
+                    if (!userSnap.exists) continue;
+                    otherUser = userSnap.data();
+                    sessionStorage.setItem('u_'+otherId, JSON.stringify(otherUser));
+                }
 
+                const isActive = activeChatId === chat.id;
                 const div = document.createElement('div');
-                div.className = `p-3 rounded-xl cursor-pointer flex gap-4 items-center transition-all duration-200 border border-transparent ${activeChatId === chat.id ? 'bg-white/10 border-white/10' : 'hover:bg-white/5'}`;
+                div.className = `p-3 rounded-xl cursor-pointer flex gap-4 items-center transition-all duration-200 group ${isActive ? 'bg-[#3b82f6]/10' : 'hover:bg-white/5'}`;
                 
-                const timeStr = chat.lastMessageTime ? new Date(chat.lastMessageTime).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '';
-                
+                const date = chat.lastMessageTime ? new Date(chat.lastMessageTime) : null;
+                const timeStr = date ? (isToday(date) ? date.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : date.toLocaleDateString()) : '';
+
                 div.innerHTML = `
                     <div class="relative">
-                        <img src="${otherUser.photoURL}" class="w-12 h-12 rounded-full bg-dark-surface object-cover">
+                        <img src="${otherUser.photoURL}" class="w-12 h-12 rounded-full bg-[#232323] object-cover border border-transparent group-hover:border-white/10 transition-colors">
+                        ${isActive ? '<div class="absolute bottom-0 right-0 w-3 h-3 bg-blue-500 rounded-full border-2 border-[#181818]"></div>' : ''}
                     </div>
                     <div class="flex-1 min-w-0">
-                        <div class="flex justify-between items-baseline">
-                            <h3 class="font-medium text-white truncate text-sm">${otherUser.displayName}</h3>
-                            <span class="text-[10px] text-gray-500">${timeStr}</span>
+                        <div class="flex justify-between items-baseline mb-0.5">
+                            <h3 class="font-semibold text-white truncate text-[15px] ${isActive ? 'text-blue-400' : ''}">${otherUser.displayName}</h3>
+                            <span class="text-[11px] text-gray-500 font-medium">${timeStr}</span>
                         </div>
                         <div class="flex items-center gap-1">
-                            ${chat.lastSenderId === currentUser.uid ? '<i data-lucide="check" class="w-3 h-3 text-white/50"></i>' : ''}
-                            <p class="text-xs text-gray-400 truncate">${chat.lastMessage || 'Нет сообщений'}</p>
+                            ${chat.lastSenderId === currentUser.uid ? '<i data-lucide="check" class="w-3 h-3 text-blue-500"></i>' : ''}
+                            <p class="text-[13px] text-gray-400 truncate leading-snug group-hover:text-gray-300 transition-colors">${chat.lastMessage || '<span class="italic opacity-50">Черновик</span>'}</p>
                         </div>
                     </div>
                 `;
@@ -529,16 +649,19 @@
             lucide.createIcons();
         };
 
+        function isToday(date) {
+            const today = new Date();
+            return date.getDate() == today.getDate() && date.getMonth() == today.getMonth() && date.getFullYear() == today.getFullYear();
+        }
+
+        // --- CHAT MESSAGING ---
         const startChat = async (user) => {
             document.getElementById('modalSearch').classList.add('opacity-0', 'pointer-events-none');
+            document.getElementById('modalSearch').querySelector('div').classList.add('scale-95');
             
-            // Check existing
             const snap = await db.collection('chats').where('participants', 'array-contains', currentUser.uid).get();
             let existingId = null;
-            
-            snap.forEach(doc => {
-                if (doc.data().participants.includes(user.uid)) existingId = doc.id;
-            });
+            snap.forEach(doc => { if (doc.data().participants.includes(user.uid)) existingId = doc.id; });
 
             if (existingId) {
                 openChat(existingId, user);
@@ -554,57 +677,120 @@
 
         const openChat = (chatId, user) => {
             activeChatId = chatId;
-            
-            // UI Toggle
+            renderChatList({forEach:()=>{}}); // Hack to refresh active state styling if we had the list
+            // Re-fetch list to update style properly
+            db.collection('chats').where('participants', 'array-contains', currentUser.uid).get().then(renderChatList);
+
             document.getElementById('chatEmpty').classList.add('hidden');
             document.getElementById('chatHeader').classList.remove('hidden');
             document.getElementById('chatHeader').classList.add('flex');
             document.getElementById('chatMessages').classList.remove('hidden');
             document.getElementById('chatInputBar').classList.remove('hidden');
             
-            // Mobile Slide
             document.getElementById('appChat').classList.remove('translate-x-full');
 
-            // Set Header
             document.getElementById('chatName').innerText = user.displayName;
-            document.getElementById('chatUsername').innerText = "@" + user.username;
             document.getElementById('chatAvatar').src = user.photoURL;
+            // Fake online status for professionalism feel
+            document.getElementById('chatStatus').innerText = 'в сети';
 
-            // Load Msgs
             if (msgsUnsubscribe) msgsUnsubscribe();
             const container = document.getElementById('chatMessages');
-            container.innerHTML = '';
             
             msgsUnsubscribe = db.collection('chats').doc(chatId).collection('messages')
                 .orderBy('timestamp', 'asc')
                 .onSnapshot(snap => {
-                    container.innerHTML = ''; // Full redraw for demo simplicity (prod needs append)
+                    const wasAtBottom = container.scrollHeight - container.scrollTop === container.clientHeight;
+                    
+                    container.innerHTML = '';
+                    let lastDate = null;
+                    let lastSender = null;
+
                     snap.forEach(doc => {
                         const msg = doc.data();
+                        const date = new Date(msg.timestamp);
+                        const dateStr = date.toLocaleDateString();
+                        
+                        // Date Separator
+                        if (dateStr !== lastDate) {
+                            const sep = document.createElement('div');
+                            sep.className = 'flex justify-center my-6';
+                            sep.innerHTML = `<span class="bg-[#2a2a2a]/80 backdrop-blur text-gray-400 text-[11px] font-medium px-3 py-1 rounded-full shadow-sm">${dateStr}</span>`;
+                            container.appendChild(sep);
+                            lastDate = dateStr;
+                        }
+
+                        // Grouping logic
                         const isOwn = msg.senderId === currentUser.uid;
-                        const el = document.createElement('div');
-                        el.className = `flex w-full mb-3 animate-fade-in ${isOwn ? 'justify-end' : 'justify-start'}`;
-                        el.innerHTML = `
-                            <div class="${isOwn ? 'msg-own' : 'msg-other'} py-2 px-4 max-w-[70%] break-words shadow-md text-[15px]">
-                                ${msg.text}
-                                <div class="text-[9px] text-right mt-1 opacity-50 select-none">
-                                    ${new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
-                                </div>
+                        const isContinuation = lastSender === msg.senderId;
+                        
+                        const wrapper = document.createElement('div');
+                        wrapper.className = `flex w-full ${isOwn ? 'justify-end' : 'justify-start'} ${isContinuation ? 'mt-1' : 'mt-3'} animate-fade-in`;
+                        
+                        // Bubble
+                        const bubble = document.createElement('div');
+                        // Tailwind classes for shape based on continuation
+                        let radiusClass = '';
+                        if (isOwn) {
+                            radiusClass = isContinuation ? 'rounded-[16px_4px_4px_16px]' : 'rounded-[16px_16px_4px_16px]';
+                        } else {
+                            radiusClass = isContinuation ? 'rounded-[4px_16px_16px_4px]' : 'rounded-[16px_16px_16px_4px]';
+                        }
+                        // Overwrite with simple logic for now: tails only on last? Or standard telegram blocks.
+                        // Let's stick to standard blocks.
+                        
+                        bubble.className = `max-w-[75%] px-3 py-1.5 shadow-sm text-[15px] leading-snug break-words relative group ${isOwn ? 'bg-white text-black rounded-[18px_18px_4px_18px]' : 'bg-[#232323] text-white rounded-[18px_18px_18px_4px]'}`;
+                        
+                        bubble.innerHTML = `
+                            ${msg.text}
+                            <div class="float-right ml-3 mt-1.5 flex items-center gap-1 opacity-60 select-none" style="font-size: 10px; line-height: 1;">
+                                <span>${date.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>
+                                ${isOwn ? '<i data-lucide="check-check" class="w-3 h-3 text-blue-500"></i>' : ''}
                             </div>
                         `;
-                        container.appendChild(el);
+                        
+                        wrapper.appendChild(bubble);
+                        container.appendChild(wrapper);
+                        lastSender = msg.senderId;
                     });
+                    
+                    lucide.createIcons();
                     container.scrollTop = container.scrollHeight;
                 });
-            
-            // Handle Back Button
+
             document.getElementById('btnBack').onclick = () => {
                 document.getElementById('appChat').classList.add('translate-x-full');
                 activeChatId = null;
+                setTimeout(() => renderChatList({forEach:()=>{}}), 300); // refresh list highlights
             };
         };
 
-        // Util: Debounce
+        const sendMessage = async () => {
+            const input = document.getElementById('inputMsg');
+            const txt = input.value.trim();
+            if (!txt || !activeChatId) return;
+            
+            input.value = '';
+            input.style.height = 'auto'; // reset height
+            input.focus();
+            
+            try {
+                await db.collection('chats').doc(activeChatId).collection('messages').add({
+                    text: txt,
+                    senderId: currentUser.uid,
+                    timestamp: Date.now()
+                });
+                
+                await db.collection('chats').doc(activeChatId).update({
+                    lastMessage: txt,
+                    lastMessageTime: Date.now(),
+                    lastSenderId: currentUser.uid
+                });
+            } catch(e) {
+                console.error(e);
+            }
+        };
+
         function debounce(func, wait) {
             let timeout;
             return function(...args) {
@@ -613,32 +799,38 @@
             };
         }
 
-        // --- CANVAS ---
+        // --- CANVAS BACKGROUND (Subtle) ---
         const initCanvas = () => {
             const c = document.getElementById('bgCanvas');
-            const x = c.getContext('2d');
-            let w, h, p = [];
-            const r = () => { w = c.width = innerWidth; h = c.height = innerHeight; };
-            class P {
-                constructor() { this.reset(); }
-                reset() { this.x=Math.random()*w; this.y=Math.random()*h; this.vx=(Math.random()-.5)*.3; this.vy=(Math.random()-.5)*.3; this.s=Math.random()*2; }
-                up() { this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>w||this.y<0||this.y>h) this.reset(); }
-                dr() { x.beginPath(); x.arc(this.x,this.y,this.s,0,7); x.fillStyle="rgba(255,255,255,0.1)"; x.fill(); }
-            }
-            const loop = () => {
-                x.clearRect(0,0,w,h);
-                p.forEach((a,i) => {
-                    a.up(); a.dr();
-                    p.slice(i+1).forEach(b => {
-                        let d = Math.hypot(a.x-b.x, a.y-b.y);
-                        if(d<120) { x.beginPath(); x.moveTo(a.x,a.y); x.lineTo(b.x,b.y); x.strokeStyle=`rgba(255,255,255,${(120-d)/1500})`; x.stroke(); }
-                    });
+            const ctx = c.getContext('2d');
+            let w, h;
+            
+            const resize = () => { w = c.width = innerWidth; h = c.height = innerHeight; };
+            window.onresize = resize; 
+            resize();
+
+            const particles = Array.from({length: 40}, () => ({
+                x: Math.random() * w, y: Math.random() * h,
+                vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
+                s: Math.random() * 2
+            }));
+
+            const animate = () => {
+                ctx.clearRect(0,0,w,h);
+                ctx.fillStyle = "rgba(255,255,255,0.03)";
+                
+                particles.forEach(p => {
+                    p.x += p.vx; p.y += p.vy;
+                    if(p.x < 0 || p.x > w) p.vx *= -1;
+                    if(p.y < 0 || p.y > h) p.vy *= -1;
+                    
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.s, 0, Math.PI*2);
+                    ctx.fill();
                 });
-                requestAnimationFrame(loop);
+                requestAnimationFrame(animate);
             };
-            window.onresize = r; r();
-            for(let i=0;i<70;i++) p.push(new P());
-            loop();
+            animate();
         };
 
         init();
