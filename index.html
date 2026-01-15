@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>minimum</title>
+    <title>minimum max</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Fonts: Inter & JetBrains Mono for Code/Nicknames -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     
     <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -24,26 +24,31 @@
             darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    fontFamily: { 
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
                     colors: {
-                        mono: {
-                            50: '#f9f9f9', 100: '#ececec', 200: '#e3e3e3', 300: '#cdcdcd',
-                            400: '#b4b4b4', 500: '#9b9b9b', 600: '#676767', 700: '#424242',
-                            800: '#2f2f2f', 900: '#1a1a1a', 950: '#0d0d0d',
+                        dark: {
+                            bg: '#050505',
+                            surface: '#0f0f0f',
+                            border: '#1f1f1f',
+                            active: '#1a1a1a'
                         }
                     },
                     animation: {
-                        'slide-in-right': 'slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'fade-in': 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'shake': 'shake 0.4s cubic-bezier(.36,.07,.19,.97) both',
                     },
                     keyframes: {
-                        slideInRight: {
-                            '0%': { transform: 'translateX(100%)' },
-                            '100%': { transform: 'translateX(0)' },
-                        },
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        shake: {
+                            '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
+                            '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
+                            '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
+                            '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
                         }
                     }
                 }
@@ -52,173 +57,211 @@
     </script>
 
     <style>
-        body { background-color: #000; color: #fff; overflow: hidden; -webkit-tap-highlight-color: transparent; }
-        ::-webkit-scrollbar { width: 4px; }
+        body { background-color: #050505; color: #e5e5e5; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
         
-        .glass { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-right: 1px solid rgba(255, 255, 255, 0.08); }
-        .glass-panel { background: #111; border: 1px solid #222; }
+        /* Glass & Blur Effects */
+        .glass-panel { 
+            background: rgba(15, 15, 15, 0.8); 
+            backdrop-filter: blur(24px); 
+            -webkit-backdrop-filter: blur(24px); 
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
         
-        .msg-own { background: #fff; color: #000; border-radius: 18px 18px 4px 18px; }
-        .msg-other { background: #222; color: #fff; border-radius: 18px 18px 18px 4px; border: 1px solid #333; }
-        
-        /* Mobile Navigation Transitions */
-        .view-section { transition: transform 0.3s ease, opacity 0.3s ease; }
-        .hidden-mobile { display: none; }
-        
-        @media (min-width: 768px) {
-            .hidden-mobile { display: flex; }
+        .glass-input {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.3);
+            outline: none;
+        }
+
+        /* Message Bubbles */
+        .msg-own { 
+            background: #ffffff; 
+            color: #000000; 
+            border-radius: 20px 20px 4px 20px; 
+            box-shadow: 0 2px 10px rgba(255,255,255,0.1);
+        }
+        .msg-other { 
+            background: #1c1c1c; 
+            color: #ffffff; 
+            border-radius: 20px 20px 20px 4px; 
+            border: 1px solid #2a2a2a;
+        }
+
+        /* Input specific for Setup */
+        .input-huge {
+            font-size: 2.5rem;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #333;
+            border-radius: 0;
+            padding: 10px 0;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            color: white;
+            transition: border-color 0.3s;
+        }
+        .input-huge:focus {
+            outline: none;
+            border-color: white;
+        }
+        .input-huge::placeholder {
+            color: #333;
         }
     </style>
 </head>
-<body class="h-screen w-screen flex flex-col font-sans">
+<body class="h-screen w-screen font-sans selection:bg-white selection:text-black">
 
     <!-- CANVAS BG -->
-    <canvas id="bgCanvas" class="absolute inset-0 z-0 opacity-30 pointer-events-none"></canvas>
+    <canvas id="bgCanvas" class="absolute inset-0 z-0 opacity-20 pointer-events-none"></canvas>
 
-    <!-- AUTH SCREEN -->
-    <div id="authView" class="absolute inset-0 z-50 flex items-center justify-center bg-black transition-opacity duration-500">
-        <div class="glass-panel p-10 rounded-3xl flex flex-col items-center gap-6 max-w-sm w-full shadow-2xl animate-fade-in border-white/10">
-            <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.2)]">
-                <i data-lucide="infinity" class="w-8 h-8 text-black"></i>
+    <!-- VIEW 1: AUTH -->
+    <div id="viewAuth" class="absolute inset-0 z-50 flex flex-col items-center justify-center transition-all duration-500">
+        <div class="flex flex-col items-center animate-slide-up">
+            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(255,255,255,0.15)] mb-8">
+                <i data-lucide="infinity" class="w-10 h-10 text-black"></i>
             </div>
-            <h1 class="text-3xl font-light tracking-tight">minimum</h1>
-            <button id="googleLoginBtn" class="w-full bg-white text-black py-3 px-6 rounded-full font-medium hover:scale-105 transition-transform flex items-center justify-center gap-3">
+            <h1 class="text-4xl font-light tracking-tighter mb-2">minimum</h1>
+            <p class="text-gray-500 text-sm tracking-[0.2em] uppercase mb-12 font-medium">Identity System</p>
+            
+            <button id="btnGoogle" class="group relative overflow-hidden rounded-full bg-white text-black px-10 py-4 font-medium transition-all hover:scale-105 active:scale-95 flex items-center gap-3 shadow-xl">
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors"></div>
                 <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M21.35 11.1h-9.17v2.73h6.51c-.33 3.8-3.5 5.4-6.5 5.4C8.92 19.23 6 16.05 6 12c0-4.17 3-7.2 7.2-7.2 2.74 0 4.93.99 6.2 2.18l2.7-2.7c-2.4-2.2-5.9-3.4-8.9-3.4C4.8 1 0 5.1 0 12c0 6.9 4.8 11 11.9 11 6.8 0 11.6-4.7 11.6-11.3 0-.8-.1-1.5-.2-2.3z"/></svg>
-                Войти через Google
+                <span>Войти через Google</span>
             </button>
-            <p id="authError" class="text-red-500 text-xs hidden"></p>
         </div>
     </div>
 
-    <!-- MAIN APP LAYOUT -->
-    <div id="appView" class="relative z-10 w-full h-full flex opacity-0 pointer-events-none transition-opacity duration-700">
+    <!-- VIEW 2: SETUP USERNAME -->
+    <div id="viewSetup" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-dark-bg transition-all duration-500 hidden opacity-0">
+        <div class="w-full max-w-md p-8 flex flex-col items-center animate-slide-up">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-medium mb-2">Создай личность</h2>
+                <p class="text-gray-500 text-sm">Придумай уникальный ID.</p>
+            </div>
+            
+            <div class="w-full relative mb-2">
+                <span class="absolute left-0 top-1/2 -translate-y-1/2 text-2xl text-gray-600 font-mono">@</span>
+                <input id="inputUsername" type="text" class="input-huge w-full pl-8" placeholder="username" maxlength="10" autocomplete="off" spellcheck="false">
+            </div>
+            
+            <div class="flex flex-col items-center gap-2 mb-8 h-6">
+                <p id="setupError" class="text-red-500 text-xs font-mono hidden"></p>
+                <p class="text-gray-600 text-[10px] uppercase tracking-widest">a-z, 0-9, _ (max 10)</p>
+            </div>
+
+            <button id="btnFinishSetup" class="w-full bg-white text-black rounded-xl py-4 font-medium hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                Продолжить
+            </button>
+        </div>
+    </div>
+
+    <!-- VIEW 3: MAIN APP -->
+    <div id="viewApp" class="absolute inset-0 z-10 flex opacity-0 pointer-events-none transition-opacity duration-700">
         
-        <!-- SIDEBAR (Chat List & Settings) -->
-        <div id="sidebarView" class="w-full md:w-[380px] h-full glass flex flex-col z-20 absolute md:relative">
-            <!-- Header -->
-            <div class="p-4 flex justify-between items-center border-b border-white/5">
-                <button id="openProfileBtn" class="flex items-center gap-3 hover:bg-white/5 p-2 rounded-xl transition-colors">
-                    <img id="myAvatar" src="" class="w-9 h-9 rounded-full bg-gray-800 object-cover border border-white/10">
-                    <div class="text-left">
-                        <div id="myName" class="text-sm font-semibold leading-none mb-1">Загрузка...</div>
-                        <div class="text-[10px] text-mono-400">В сети</div>
+        <!-- SIDEBAR -->
+        <div id="appSidebar" class="w-full md:w-[400px] h-full glass-panel flex flex-col z-20 absolute md:relative border-r border-dark-border">
+            <!-- App Header -->
+            <div class="p-5 flex justify-between items-center">
+                <div class="flex items-center gap-3 cursor-pointer group" id="btnOpenProfile">
+                    <div class="relative">
+                        <img id="myAvatar" class="w-10 h-10 rounded-full bg-dark-surface object-cover border border-white/10 group-hover:border-white/40 transition-colors">
+                        <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-black"></div>
                     </div>
-                </button>
-                <div class="flex gap-1">
-                    <button id="openSettingsBtn" class="p-2 text-mono-400 hover:text-white hover:bg-white/10 rounded-full transition-colors"><i data-lucide="settings" class="w-5 h-5"></i></button>
-                    <button id="newChatBtn" class="p-2 bg-white text-black rounded-full hover:bg-gray-200 transition-colors shadow-lg shadow-white/10"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                    <div>
+                        <div id="myDisplayName" class="text-sm font-semibold leading-tight">Loading...</div>
+                        <div id="myUsernameDisplay" class="text-xs text-gray-500 font-mono">@...</div>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button id="btnNewChat" class="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition-transform">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
+                    </button>
                 </div>
             </div>
 
             <!-- Search -->
-            <div class="px-4 py-2">
-                <div class="bg-[#1a1a1a] rounded-xl flex items-center px-3 py-2 border border-white/5 focus-within:border-white/20 transition-colors">
-                    <i data-lucide="search" class="w-4 h-4 text-mono-500 mr-2"></i>
-                    <input id="chatSearchInput" type="text" placeholder="Поиск чатов" class="bg-transparent border-none outline-none text-sm text-white w-full placeholder-mono-600">
+            <div class="px-5 pb-2">
+                <div class="bg-dark-surface rounded-xl flex items-center px-4 py-3 border border-dark-border focus-within:border-white/20 transition-colors">
+                    <i data-lucide="search" class="w-4 h-4 text-gray-500 mr-3"></i>
+                    <input id="searchChats" type="text" placeholder="Поиск" class="bg-transparent border-none outline-none text-sm text-white w-full placeholder-gray-600">
                 </div>
             </div>
 
             <!-- Chat List -->
-            <div id="chatList" class="flex-1 overflow-y-auto p-2 space-y-1">
-                <!-- Items injected here -->
+            <div id="listChats" class="flex-1 overflow-y-auto px-3 py-2 space-y-1">
+                <!-- Chat Items -->
             </div>
         </div>
 
-        <!-- CHAT DETAIL (Messages) -->
-        <div id="chatView" class="w-full h-full flex flex-col bg-black/60 absolute md:relative transform translate-x-full md:translate-x-0 transition-transform duration-300 z-30">
-            <!-- Empty State -->
-            <div id="emptyState" class="hidden md:flex flex-col items-center justify-center h-full text-mono-600">
-                <div class="bg-white/5 p-6 rounded-full mb-4"><i data-lucide="message-square" class="w-8 h-8 opacity-50"></i></div>
-                <p>Выберите чат, чтобы начать общение</p>
-            </div>
-
-            <!-- Header -->
-            <div id="chatHeader" class="h-16 border-b border-white/10 flex items-center justify-between px-4 bg-black/40 backdrop-blur-md hidden">
-                <div class="flex items-center gap-3">
-                    <button id="backToChatsBtn" class="md:hidden p-2 -ml-2 text-mono-400 hover:text-white"><i data-lucide="arrow-left" class="w-6 h-6"></i></button>
-                    <div class="w-9 h-9 rounded-full bg-mono-800 flex items-center justify-center overflow-hidden border border-white/10">
-                        <img id="chatHeaderAvatar" class="w-full h-full object-cover hidden">
-                        <span id="chatHeaderInitials" class="text-xs font-bold"></span>
-                    </div>
+        <!-- CHAT AREA -->
+        <div id="appChat" class="w-full h-full flex flex-col bg-dark-bg absolute md:relative transform translate-x-full md:translate-x-0 transition-transform duration-500 ease-in-out z-30">
+            
+            <!-- Chat Header -->
+            <div id="chatHeader" class="h-[72px] glass-panel border-b border-dark-border flex items-center justify-between px-6 z-20 hidden">
+                <div class="flex items-center gap-4">
+                    <button id="btnBack" class="md:hidden -ml-2 p-2 text-gray-400 hover:text-white"><i data-lucide="arrow-left" class="w-6 h-6"></i></button>
+                    <img id="chatAvatar" class="w-9 h-9 rounded-full bg-dark-surface object-cover border border-white/10">
                     <div>
-                        <h3 id="chatHeaderName" class="text-sm font-semibold">Имя</h3>
-                        <p class="text-[10px] text-mono-400">в сети</p>
+                        <h3 id="chatName" class="text-sm font-semibold text-white">User</h3>
+                        <p id="chatUsername" class="text-xs text-gray-500 font-mono">@user</p>
                     </div>
                 </div>
-                <button class="p-2 text-mono-400 hover:text-white"><i data-lucide="more-vertical" class="w-5 h-5"></i></button>
+                <button class="text-gray-500 hover:text-white transition-colors"><i data-lucide="more-horizontal" class="w-5 h-5"></i></button>
             </div>
 
             <!-- Messages -->
-            <div id="messagesList" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar hidden">
-                <!-- Messages injected here -->
+            <div id="chatMessages" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-4 custom-scrollbar relative hidden">
+                <!-- Messages go here -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="chatEmpty" class="absolute inset-0 flex flex-col items-center justify-center text-gray-600">
+                <div class="w-20 h-20 bg-dark-surface rounded-full flex items-center justify-center mb-4 border border-dark-border">
+                    <i data-lucide="message-square-dashed" class="w-8 h-8 opacity-50"></i>
+                </div>
+                <p class="text-sm font-medium">Выберите чат для начала</p>
             </div>
 
             <!-- Input -->
-            <div id="chatInputArea" class="p-4 bg-black/40 backdrop-blur-md hidden">
-                <div class="flex gap-2 items-end max-w-4xl mx-auto">
-                    <div class="flex-1 bg-[#1a1a1a] border border-white/10 rounded-2xl flex items-center px-2 py-1 focus-within:ring-1 focus-within:ring-white/20">
-                        <button class="p-2 text-mono-500 hover:text-white"><i data-lucide="paperclip" class="w-5 h-5"></i></button>
-                        <textarea id="msgInput" rows="1" placeholder="Сообщение" class="bg-transparent border-none outline-none text-white w-full py-2.5 px-2 text-sm resize-none max-h-32 placeholder-mono-600"></textarea>
-                    </div>
-                    <button id="sendBtn" class="w-11 h-11 bg-white rounded-full flex items-center justify-center text-black hover:scale-105 active:scale-95 transition-transform shadow-lg shadow-white/5 disabled:opacity-50 disabled:scale-100">
-                        <i data-lucide="send" class="w-5 h-5 ml-0.5"></i>
+            <div id="chatInputBar" class="p-6 hidden">
+                <div class="glass-input rounded-[24px] p-2 flex items-end gap-2 shadow-2xl bg-black/40">
+                    <textarea id="inputMsg" rows="1" placeholder="Сообщение..." class="w-full bg-transparent border-none outline-none text-white py-3 px-4 resize-none max-h-32 text-sm placeholder-gray-600 custom-scrollbar"></textarea>
+                    <button id="btnSend" class="p-3 bg-white text-black rounded-full hover:scale-105 active:scale-95 transition-all shadow-lg shrink-0 disabled:opacity-50 disabled:scale-100">
+                        <i data-lucide="arrow-up" class="w-5 h-5"></i>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODALS -->
-    
-    <!-- New Chat / Search Modal -->
-    <div id="searchModal" class="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="w-full max-w-md bg-[#111] border border-white/10 rounded-2xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300" id="searchModalContent">
-            <div class="p-4 border-b border-white/10 flex justify-between items-center">
-                <h3 class="font-medium">Новый чат</h3>
-                <button id="closeSearchBtn" class="p-1 rounded-full hover:bg-white/10"><i data-lucide="x" class="w-5 h-5"></i></button>
+    <!-- MODAL: NEW CHAT / SEARCH -->
+    <div id="modalSearch" class="fixed inset-0 z-[60] bg-black/90 backdrop-blur-sm flex items-start justify-center pt-24 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="w-full max-w-lg bg-dark-surface border border-dark-border rounded-2xl shadow-2xl overflow-hidden transform scale-95 transition-all" id="modalSearchContent">
+            <div class="p-4 border-b border-dark-border flex items-center gap-3">
+                <i data-lucide="search" class="w-5 h-5 text-gray-500"></i>
+                <input id="inputSearchUser" type="text" placeholder="Поиск по @username..." class="bg-transparent border-none outline-none text-white flex-1 font-mono text-sm h-10">
+                <button id="btnCloseSearch" class="p-2 bg-dark-active rounded-full hover:bg-white/10 text-gray-400"><i data-lucide="x" class="w-4 h-4"></i></button>
             </div>
-            <div class="p-4">
-                <div class="bg-[#222] rounded-xl flex items-center px-3 py-2 mb-4">
-                    <i data-lucide="search" class="w-4 h-4 text-mono-500 mr-2"></i>
-                    <input id="userSearchInput" type="text" placeholder="Поиск людей (enter)..." class="bg-transparent border-none outline-none text-sm text-white w-full">
-                </div>
-                <div class="text-xs text-mono-500 mb-2 uppercase tracking-wider">Все пользователи</div>
-                <div id="usersList" class="max-h-64 overflow-y-auto space-y-1">
-                    <!-- Users List -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Profile Modal -->
-    <div id="profileModal" class="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm flex items-end md:items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="w-full md:max-w-md bg-[#111] border-t md:border border-white/10 rounded-t-2xl md:rounded-2xl shadow-2xl overflow-hidden transform translate-y-full md:translate-y-0 transition-transform duration-300" id="profileModalContent">
-            <div class="p-4 border-b border-white/10 flex justify-between items-center">
-                <h3 class="font-medium">Профиль</h3>
-                <button id="closeProfileBtn" class="p-1 rounded-full hover:bg-white/10"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="p-6 flex flex-col items-center">
-                <img id="profileAvatarEdit" src="" class="w-24 h-24 rounded-full mb-4 border-2 border-white/20">
-                <div class="w-full space-y-4">
-                    <div>
-                        <label class="text-xs text-mono-500 ml-1">Имя</label>
-                        <input id="profileNameInput" type="text" class="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white outline-none focus:border-white/40">
-                    </div>
-                    <div>
-                        <label class="text-xs text-mono-500 ml-1">О себе (Bio)</label>
-                        <input id="profileBioInput" type="text" class="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white outline-none focus:border-white/40">
-                    </div>
-                    <button id="saveProfileBtn" class="w-full bg-white text-black font-medium py-3 rounded-xl hover:bg-gray-200 transition-colors">Сохранить</button>
-                    <button id="logoutBtn" class="w-full text-red-500 text-sm py-2 hover:bg-red-500/10 rounded-xl transition-colors">Выйти из аккаунта</button>
-                </div>
+            <div id="resultList" class="max-h-[60vh] overflow-y-auto p-2">
+                <!-- Results -->
+                <div class="text-center py-8 text-gray-600 text-xs">Введите @username для поиска</div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- CONFIG ---
+        // --- 1. CONFIG ---
         const firebaseConfig = {
           apiKey: "AIzaSyDuP_aYZpqJ-Y8LINCIywCFw3G2ZYVExv4",
           authDomain: "msgr-minimum.firebaseapp.com",
@@ -229,395 +272,376 @@
           measurementId: "G-2FFQC74VG6"
         };
 
-        // --- GLOBAL STATE ---
-        let state = {
-            user: null, // Auth User
-            userData: null, // Firestore Profile
-            chats: [],
-            activeChatId: null,
-            usersCache: {}
-        };
-
         let app, auth, db;
-        
-        // --- UTILS ---
-        const el = (id) => document.getElementById(id);
-        const escapeHtml = (str) => str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        const formatTime = (ts) => new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        let currentUser = null;
+        let activeChatId = null;
+        let chatsUnsubscribe = null;
+        let msgsUnsubscribe = null;
 
-        // --- INIT ---
-        const initApp = () => {
+        // --- 2. INIT & ROUTING ---
+        const init = () => {
             lucide.createIcons();
             initCanvas();
 
-            if (typeof firebase === 'undefined') {
-                console.error("Firebase not loaded");
-                return;
-            }
+            if (typeof firebase === 'undefined') return console.error("Firebase SDK fail");
+            
             app = firebase.initializeApp(firebaseConfig);
             auth = firebase.auth();
             db = firebase.firestore();
 
-            // Setup Listeners
-            auth.onAuthStateChanged(handleAuthState);
-            
-            // Event Bindings
-            el('googleLoginBtn').onclick = login;
-            el('logoutBtn').onclick = logout;
-            el('newChatBtn').onclick = () => toggleModal('searchModal', true);
-            el('closeSearchBtn').onclick = () => toggleModal('searchModal', false);
-            el('openProfileBtn').onclick = openProfile;
-            el('closeProfileBtn').onclick = () => toggleModal('profileModal', false);
-            el('saveProfileBtn').onclick = saveProfile;
-            el('sendBtn').onclick = sendMessage;
-            el('backToChatsBtn').onclick = closeChat;
-            
-            el('msgInput').addEventListener('keydown', (e) => {
-                if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-            });
-            
-            // Search Users Logic
-            el('userSearchInput').addEventListener('input', debounce(searchUsers, 500));
-        };
-
-        // --- AUTH LOGIC ---
-        const handleAuthState = async (user) => {
-            state.user = user;
-            if (user) {
-                // Logged In
-                el('authView').classList.add('opacity-0', 'pointer-events-none');
-                el('appView').classList.remove('opacity-0', 'pointer-events-none');
-                
-                // 1. Sync User Profile
-                const userRef = db.collection('users').doc(user.uid);
-                const doc = await userRef.get();
-                if (!doc.exists) {
-                    await userRef.set({
-                        uid: user.uid,
-                        displayName: user.displayName,
-                        email: user.email,
-                        photoURL: user.photoURL,
-                        bio: "Hey there! I am using minimum.",
-                        lastSeen: Date.now()
-                    });
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    // Check if profile exists and has username
+                    const doc = await db.collection('users').doc(user.uid).get();
+                    
+                    if (doc.exists && doc.data().username) {
+                        // User Ready -> Go to App
+                        switchView('viewApp');
+                        initAppLogic(doc.data());
+                    } else {
+                        // Setup Needed -> Go to Setup
+                        switchView('viewSetup');
+                        document.getElementById('viewAuth').classList.add('hidden'); // Hide Login
+                    }
+                } else {
+                    currentUser = null;
+                    switchView('viewAuth');
                 }
-                
-                // 2. Listen to My Profile
-                userRef.onSnapshot(snap => {
-                    state.userData = snap.data();
-                    updateProfileUI();
-                });
-
-                // 3. Listen to Chats
-                loadChats();
-                
-            } else {
-                // Logged Out
-                el('authView').classList.remove('opacity-0', 'pointer-events-none');
-                el('appView').classList.add('opacity-0', 'pointer-events-none');
-                state = { user: null, userData: null, chats: [], activeChatId: null, usersCache: {} };
-            }
-        };
-
-        const login = async () => {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            try { await auth.signInWithPopup(provider); } 
-            catch (e) { el('authError').innerText = e.message; el('authError').classList.remove('hidden'); }
-        };
-
-        const logout = () => { auth.signOut(); location.reload(); };
-
-        // --- DATA & UI LOGIC ---
-
-        const updateProfileUI = () => {
-            const data = state.userData || state.user;
-            el('myName').innerText = data.displayName;
-            el('myAvatar').src = data.photoURL;
-            el('profileAvatarEdit').src = data.photoURL;
-            el('profileNameInput').value = data.displayName;
-            el('profileBioInput').value = data.bio || "";
-        };
-
-        const saveProfile = async () => {
-            const newName = el('profileNameInput').value.trim();
-            const newBio = el('profileBioInput').value.trim();
-            if (!newName) return;
-            
-            await db.collection('users').doc(state.user.uid).update({
-                displayName: newName,
-                bio: newBio
             });
-            toggleModal('profileModal', false);
         };
 
-        const loadChats = () => {
-            // Complex query: chats where 'participants' array contains my uid
-            db.collection('chats')
-                .where('participants', 'array-contains', state.user.uid)
-                .onSnapshot(snapshot => {
-                    const chats = [];
-                    snapshot.forEach(doc => chats.push({ id: doc.id, ...doc.data() }));
-                    // Sort locally
-                    chats.sort((a, b) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0));
-                    state.chats = chats;
-                    renderChatList();
-                });
-        };
-
-        const renderChatList = async () => {
-            const container = el('chatList');
-            container.innerHTML = '';
-            
-            for (const chat of state.chats) {
-                // Determine other user
-                const otherUserId = chat.participants.find(uid => uid !== state.user.uid);
-                let otherUser = state.usersCache[otherUserId];
-                
-                // Fetch if not cached
-                if (!otherUser) {
-                    const snap = await db.collection('users').doc(otherUserId).get();
-                    otherUser = snap.data();
-                    state.usersCache[otherUserId] = otherUser;
+        const switchView = (viewId) => {
+            ['viewAuth', 'viewSetup', 'viewApp'].forEach(id => {
+                const el = document.getElementById(id);
+                if (id === viewId) {
+                    el.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+                    if (id === 'viewSetup') el.classList.remove('hidden', 'opacity-0');
+                    if (id === 'viewApp') el.classList.add('opacity-100');
+                } else {
+                    el.classList.add('opacity-0', 'pointer-events-none');
+                    setTimeout(() => el.classList.add('hidden'), 500);
                 }
-
-                if (!otherUser) continue; // Skip if user data missing
-
-                const div = document.createElement('div');
-                const isActive = chat.id === state.activeChatId;
-                div.className = `p-3 rounded-xl cursor-pointer flex gap-3 items-center group transition-colors ${isActive ? 'bg-white/10' : 'hover:bg-white/5'}`;
-                
-                div.innerHTML = `
-                    <div class="w-12 h-12 rounded-full bg-mono-800 flex items-center justify-center overflow-hidden border border-white/10 shrink-0">
-                        <img src="${otherUser.photoURL}" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1 overflow-hidden">
-                        <div class="flex justify-between items-baseline mb-0.5">
-                            <h3 class="font-medium text-white text-sm truncate">${otherUser.displayName}</h3>
-                            <span class="text-xs text-mono-500">${chat.lastMessageTime ? formatTime(chat.lastMessageTime) : ''}</span>
-                        </div>
-                        <p class="text-xs text-mono-400 truncate flex items-center gap-1">
-                            ${chat.lastSenderId === state.user.uid ? '<i data-lucide="check" class="w-3 h-3"></i>' : ''}
-                            ${escapeHtml(chat.lastMessage || 'Нет сообщений')}
-                        </p>
-                    </div>
-                `;
-                div.onclick = () => openChat(chat.id, otherUser);
-                container.appendChild(div);
-            }
-            lucide.createIcons();
-        };
-
-        // --- SEARCH & NEW CHAT ---
-        const searchUsers = async () => {
-            const query = el('userSearchInput').value.toLowerCase();
-            const list = el('usersList');
-            list.innerHTML = '<div class="text-center p-2"><div class="animate-spin w-4 h-4 border-2 border-white rounded-full border-t-transparent mx-auto"></div></div>';
-            
-            // For Demo: fetch all users (Not efficient for production, but strict rules prevent complex index creation)
-            const snap = await db.collection('users').limit(20).get(); 
-            list.innerHTML = '';
-            
-            snap.forEach(doc => {
-                const u = doc.data();
-                if (u.uid === state.user.uid) return;
-                
-                // Client side filter for demo
-                if (query && !u.displayName.toLowerCase().includes(query)) return;
-
-                const div = document.createElement('div');
-                div.className = 'flex items-center justify-between p-2 hover:bg-white/5 rounded-lg cursor-pointer';
-                div.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <img src="${u.photoURL}" class="w-10 h-10 rounded-full bg-gray-700">
-                        <div>
-                            <div class="text-sm font-medium">${u.displayName}</div>
-                            <div class="text-[10px] text-mono-500 truncate w-32">${u.bio || ''}</div>
-                        </div>
-                    </div>
-                    <button class="bg-white text-black p-1.5 rounded-full"><i data-lucide="message-circle" class="w-4 h-4"></i></button>
-                `;
-                div.onclick = () => createChat(u.uid);
-                list.appendChild(div);
             });
-            lucide.createIcons();
         };
 
-        const createChat = async (targetUid) => {
-            // Check if chat exists
-            const existing = state.chats.find(c => c.participants.includes(targetUid));
-            if (existing) {
-                toggleModal('searchModal', false);
-                openChat(existing.id, state.usersCache[targetUid]);
+        // --- 3. REGISTRATION LOGIC ---
+        const btnGoogle = document.getElementById('btnGoogle');
+        const btnFinishSetup = document.getElementById('btnFinishSetup');
+        const inputUsername = document.getElementById('inputUsername');
+        const setupError = document.getElementById('setupError');
+
+        btnGoogle.onclick = () => {
+            auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => alert(e.message));
+        };
+
+        // Username Validation & Save
+        inputUsername.addEventListener('input', (e) => {
+            let val = e.target.value.toLowerCase();
+            // Force regex replace for invalid chars
+            val = val.replace(/[^a-z0-9_]/g, '');
+            if (val.length > 10) val = val.substring(0, 10);
+            e.target.value = val;
+            
+            setupError.classList.add('hidden');
+        });
+
+        btnFinishSetup.onclick = async () => {
+            const username = inputUsername.value;
+            if (username.length < 3) {
+                showSetupError("Минимум 3 символа");
                 return;
             }
 
-            // Create new
-            const ref = await db.collection('chats').add({
-                participants: [state.user.uid, targetUid],
-                createdAt: Date.now(),
-                lastMessage: '',
-                lastMessageTime: Date.now()
-            });
-            
-            toggleModal('searchModal', false);
-            // It will appear in list automatically due to listener
-        };
+            btnFinishSetup.disabled = true;
+            btnFinishSetup.innerText = "Проверка...";
 
-        // --- CHAT LOGIC ---
-        let msgUnsubscribe = null;
+            // Check uniqueness (Simple check: query users where username == input)
+            // Note: In production, requires index. For now, we trust the write/rules logic or simple query.
+            const check = await db.collection('users').where('username', '==', username).get();
+            if (!check.empty) {
+                showSetupError("Этот @username уже занят");
+                btnFinishSetup.disabled = false;
+                btnFinishSetup.innerText = "Продолжить";
+                return;
+            }
 
-        const openChat = (chatId, userObj) => {
-            state.activeChatId = chatId;
-            renderChatList(); // Update Active state UI
-
-            // UI Switching
-            el('emptyState').classList.add('hidden');
-            el('chatHeader').classList.remove('hidden');
-            el('chatHeader').classList.add('flex');
-            el('messagesList').classList.remove('hidden');
-            el('chatInputArea').classList.remove('hidden');
-
-            // Mobile transition
-            el('chatView').classList.remove('translate-x-full');
-            
-            // Set Header Info
-            el('chatHeaderName').innerText = userObj.displayName;
-            el('chatHeaderAvatar').src = userObj.photoURL;
-            el('chatHeaderAvatar').classList.remove('hidden');
-
-            // Load Messages
-            if (msgUnsubscribe) msgUnsubscribe();
-            
-            el('messagesList').innerHTML = '<div class="w-full h-full flex items-center justify-center"><div class="animate-spin w-6 h-6 border-2 border-white border-t-transparent rounded-full"></div></div>';
-
-            msgUnsubscribe = db.collection('chats').doc(chatId).collection('messages')
-                .orderBy('timestamp', 'asc')
-                .onSnapshot(snap => {
-                    const container = el('messagesList');
-                    container.innerHTML = '';
-                    snap.forEach(doc => renderMessage(doc.data()));
-                    container.scrollTo(0, container.scrollHeight);
-                });
-        };
-
-        const closeChat = () => {
-            state.activeChatId = null;
-            el('chatView').classList.add('translate-x-full'); // Mobile slide out
-            renderChatList();
-            if (msgUnsubscribe) msgUnsubscribe();
-        };
-
-        const renderMessage = (msg) => {
-            const isOwn = msg.senderId === state.user.uid;
-            const div = document.createElement('div');
-            div.className = `flex w-full animate-fade-in ${isOwn ? 'justify-end' : 'justify-start'}`;
-            
-            div.innerHTML = `
-                <div class="${isOwn ? 'msg-own' : 'msg-other'} max-w-[70%] px-4 py-2 relative text-sm shadow-md">
-                    <p class="leading-relaxed whitespace-pre-wrap">${escapeHtml(msg.text)}</p>
-                    <div class="flex items-center justify-end mt-1 gap-1 select-none">
-                        <span class="text-[9px] ${isOwn ? 'text-black/50' : 'text-white/30'}">${formatTime(msg.timestamp)}</span>
-                        ${isOwn ? '<i data-lucide="check-check" class="w-3 h-3 opacity-60"></i>' : ''}
-                    </div>
-                </div>
-            `;
-            el('messagesList').appendChild(div);
-            lucide.createIcons();
-        };
-
-        const sendMessage = async () => {
-            const input = el('msgInput');
-            const text = input.value.trim();
-            if (!text || !state.activeChatId) return;
-            
-            input.value = '';
-            
-            // 1. Add Message
-            await db.collection('chats').doc(state.activeChatId).collection('messages').add({
-                text: text,
-                senderId: state.user.uid,
-                timestamp: Date.now()
-            });
-
-            // 2. Update Chat Metadata (for list view)
-            await db.collection('chats').doc(state.activeChatId).update({
-                lastMessage: text,
-                lastMessageTime: Date.now(),
-                lastSenderId: state.user.uid
-            });
-        };
-
-        // --- UI HELPERS ---
-        const toggleModal = (id, show) => {
-            const modal = el(id);
-            const content = el(id + 'Content');
-            
-            if (show) {
-                modal.classList.remove('opacity-0', 'pointer-events-none');
-                content.classList.remove('scale-95', 'translate-y-full');
-            } else {
-                modal.classList.add('opacity-0', 'pointer-events-none');
-                content.classList.add('scale-95', 'translate-y-full');
+            // Save Profile
+            try {
+                await db.collection('users').doc(currentUser.uid).set({
+                    uid: currentUser.uid,
+                    displayName: currentUser.displayName,
+                    email: currentUser.email,
+                    photoURL: currentUser.photoURL,
+                    username: username,
+                    bio: "minimum user",
+                    createdAt: Date.now()
+                }, { merge: true }); // Merge ensures we don't overwrite if partial data existed
+                
+                // Proceed
+                window.location.reload(); // Refresh to trigger auth check again clean
+            } catch (e) {
+                showSetupError("Ошибка сохранения: " + e.message);
+                btnFinishSetup.disabled = false;
             }
         };
 
-        const openProfile = () => toggleModal('profileModal', true);
+        const showSetupError = (msg) => {
+            setupError.innerText = msg;
+            setupError.classList.remove('hidden');
+            const box = document.querySelector('#viewSetup > div');
+            box.classList.remove('animate-shake');
+            void box.offsetWidth; // trigger reflow
+            box.classList.add('animate-shake');
+        };
+
+        // --- 4. APP LOGIC ---
         
-        const debounce = (func, wait) => {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
+        const initAppLogic = (userData) => {
+            // Setup Profile Header
+            document.getElementById('myAvatar').src = userData.photoURL;
+            document.getElementById('myDisplayName').innerText = userData.displayName;
+            document.getElementById('myUsernameDisplay').innerText = "@" + userData.username;
+
+            // Load Chats
+            if (chatsUnsubscribe) chatsUnsubscribe();
+            chatsUnsubscribe = db.collection('chats')
+                .where('participants', 'array-contains', currentUser.uid)
+                .onSnapshot(renderChatList);
+
+            // New Chat Modal
+            const modal = document.getElementById('modalSearch');
+            document.getElementById('btnNewChat').onclick = () => {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                document.getElementById('inputSearchUser').focus();
+            };
+            document.getElementById('btnCloseSearch').onclick = () => {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+            };
+
+            // Search Logic
+            document.getElementById('inputSearchUser').oninput = debounce(async (e) => {
+                const term = e.target.value.toLowerCase().replace('@', '');
+                const list = document.getElementById('resultList');
+                if (term.length < 3) return;
+
+                const snap = await db.collection('users')
+                    .where('username', '>=', term)
+                    .where('username', '<=', term + '\uf8ff')
+                    .limit(5)
+                    .get();
+
+                list.innerHTML = '';
+                if (snap.empty) {
+                    list.innerHTML = '<div class="text-center text-gray-600 py-4">Никого не найдено</div>';
+                    return;
+                }
+
+                snap.forEach(doc => {
+                    const u = doc.data();
+                    if (u.uid === currentUser.uid) return;
+                    const el = document.createElement('div');
+                    el.className = 'flex items-center gap-3 p-3 hover:bg-white/5 rounded-xl cursor-pointer transition-colors';
+                    el.innerHTML = `
+                        <img src="${u.photoURL}" class="w-10 h-10 rounded-full bg-gray-800">
+                        <div>
+                            <div class="font-medium text-white">${u.displayName}</div>
+                            <div class="text-xs text-gray-500 font-mono">@${u.username}</div>
+                        </div>
+                    `;
+                    el.onclick = () => startChat(u);
+                    list.appendChild(el);
+                });
+            }, 500);
+
+            // Chat Input
+            const sendBtn = document.getElementById('btnSend');
+            const inputMsg = document.getElementById('inputMsg');
+            
+            const doSend = async () => {
+                const txt = inputMsg.value.trim();
+                if (!txt || !activeChatId) return;
+                inputMsg.value = '';
+                
+                await db.collection('chats').doc(activeChatId).collection('messages').add({
+                    text: txt,
+                    senderId: currentUser.uid,
+                    timestamp: Date.now()
+                });
+                
+                await db.collection('chats').doc(activeChatId).update({
+                    lastMessage: txt,
+                    lastMessageTime: Date.now(),
+                    lastSenderId: currentUser.uid
+                });
+            };
+
+            sendBtn.onclick = doSend;
+            inputMsg.onkeydown = (e) => { if(e.key==='Enter' && !e.shiftKey) { e.preventDefault(); doSend(); }};
+            
+            // Logout
+            document.getElementById('btnOpenProfile').onclick = () => {
+                if(confirm('Выйти из аккаунта?')) {
+                    auth.signOut();
+                    window.location.reload();
+                }
             };
         };
 
-        // --- CANVAS BACKGROUND ---
+        const renderChatList = async (snap) => {
+            const list = document.getElementById('listChats');
+            list.innerHTML = '';
+            
+            const chats = [];
+            snap.forEach(doc => chats.push({id: doc.id, ...doc.data()}));
+            chats.sort((a,b) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0));
+
+            for (const chat of chats) {
+                const otherId = chat.participants.find(id => id !== currentUser.uid);
+                // Fetch user data (simple cache could be added here)
+                const userSnap = await db.collection('users').doc(otherId).get();
+                if (!userSnap.exists) continue;
+                const otherUser = userSnap.data();
+
+                const div = document.createElement('div');
+                div.className = `p-3 rounded-xl cursor-pointer flex gap-4 items-center transition-all duration-200 border border-transparent ${activeChatId === chat.id ? 'bg-white/10 border-white/10' : 'hover:bg-white/5'}`;
+                
+                const timeStr = chat.lastMessageTime ? new Date(chat.lastMessageTime).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '';
+                
+                div.innerHTML = `
+                    <div class="relative">
+                        <img src="${otherUser.photoURL}" class="w-12 h-12 rounded-full bg-dark-surface object-cover">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-baseline">
+                            <h3 class="font-medium text-white truncate text-sm">${otherUser.displayName}</h3>
+                            <span class="text-[10px] text-gray-500">${timeStr}</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            ${chat.lastSenderId === currentUser.uid ? '<i data-lucide="check" class="w-3 h-3 text-white/50"></i>' : ''}
+                            <p class="text-xs text-gray-400 truncate">${chat.lastMessage || 'Нет сообщений'}</p>
+                        </div>
+                    </div>
+                `;
+                div.onclick = () => openChat(chat.id, otherUser);
+                list.appendChild(div);
+            }
+            lucide.createIcons();
+        };
+
+        const startChat = async (user) => {
+            document.getElementById('modalSearch').classList.add('opacity-0', 'pointer-events-none');
+            
+            // Check existing
+            const snap = await db.collection('chats').where('participants', 'array-contains', currentUser.uid).get();
+            let existingId = null;
+            
+            snap.forEach(doc => {
+                if (doc.data().participants.includes(user.uid)) existingId = doc.id;
+            });
+
+            if (existingId) {
+                openChat(existingId, user);
+            } else {
+                const ref = await db.collection('chats').add({
+                    participants: [currentUser.uid, user.uid],
+                    createdAt: Date.now(),
+                    lastMessage: null
+                });
+                openChat(ref.id, user);
+            }
+        };
+
+        const openChat = (chatId, user) => {
+            activeChatId = chatId;
+            
+            // UI Toggle
+            document.getElementById('chatEmpty').classList.add('hidden');
+            document.getElementById('chatHeader').classList.remove('hidden');
+            document.getElementById('chatHeader').classList.add('flex');
+            document.getElementById('chatMessages').classList.remove('hidden');
+            document.getElementById('chatInputBar').classList.remove('hidden');
+            
+            // Mobile Slide
+            document.getElementById('appChat').classList.remove('translate-x-full');
+
+            // Set Header
+            document.getElementById('chatName').innerText = user.displayName;
+            document.getElementById('chatUsername').innerText = "@" + user.username;
+            document.getElementById('chatAvatar').src = user.photoURL;
+
+            // Load Msgs
+            if (msgsUnsubscribe) msgsUnsubscribe();
+            const container = document.getElementById('chatMessages');
+            container.innerHTML = '';
+            
+            msgsUnsubscribe = db.collection('chats').doc(chatId).collection('messages')
+                .orderBy('timestamp', 'asc')
+                .onSnapshot(snap => {
+                    container.innerHTML = ''; // Full redraw for demo simplicity (prod needs append)
+                    snap.forEach(doc => {
+                        const msg = doc.data();
+                        const isOwn = msg.senderId === currentUser.uid;
+                        const el = document.createElement('div');
+                        el.className = `flex w-full mb-3 animate-fade-in ${isOwn ? 'justify-end' : 'justify-start'}`;
+                        el.innerHTML = `
+                            <div class="${isOwn ? 'msg-own' : 'msg-other'} py-2 px-4 max-w-[70%] break-words shadow-md text-[15px]">
+                                ${msg.text}
+                                <div class="text-[9px] text-right mt-1 opacity-50 select-none">
+                                    ${new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
+                                </div>
+                            </div>
+                        `;
+                        container.appendChild(el);
+                    });
+                    container.scrollTop = container.scrollHeight;
+                });
+            
+            // Handle Back Button
+            document.getElementById('btnBack').onclick = () => {
+                document.getElementById('appChat').classList.add('translate-x-full');
+                activeChatId = null;
+            };
+        };
+
+        // Util: Debounce
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        // --- CANVAS ---
         const initCanvas = () => {
-            const canvas = document.getElementById('bgCanvas');
-            const ctx = canvas.getContext('2d');
-            let w, h, particles = [];
-            const resize = () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; };
-            class Particle {
+            const c = document.getElementById('bgCanvas');
+            const x = c.getContext('2d');
+            let w, h, p = [];
+            const r = () => { w = c.width = innerWidth; h = c.height = innerHeight; };
+            class P {
                 constructor() { this.reset(); }
-                reset() {
-                    this.x = Math.random() * w; this.y = Math.random() * h;
-                    this.vx = (Math.random() - 0.5) * 0.5; this.vy = (Math.random() - 0.5) * 0.5;
-                    this.size = Math.random() * 2;
-                }
-                update() {
-                    this.x += this.vx; this.y += this.vy;
-                    if(this.x<0||this.x>w||this.y<0||this.y>h) this.reset();
-                }
-                draw() {
-                    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-                    ctx.fillStyle = "rgba(255,255,255,0.15)"; ctx.fill();
-                }
+                reset() { this.x=Math.random()*w; this.y=Math.random()*h; this.vx=(Math.random()-.5)*.3; this.vy=(Math.random()-.5)*.3; this.s=Math.random()*2; }
+                up() { this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>w||this.y<0||this.y>h) this.reset(); }
+                dr() { x.beginPath(); x.arc(this.x,this.y,this.s,0,7); x.fillStyle="rgba(255,255,255,0.1)"; x.fill(); }
             }
             const loop = () => {
-                ctx.clearRect(0,0,w,h);
-                particles.forEach((p, i) => {
-                    p.update(); p.draw();
-                    particles.slice(i+1).forEach(p2 => {
-                        const dx=p.x-p2.x, dy=p.y-p2.y, d=Math.sqrt(dx*dx+dy*dy);
-                        if(d<100) {
-                            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y);
-                            ctx.strokeStyle=`rgba(255,255,255,${(100-d)/1000})`; ctx.stroke();
-                        }
+                x.clearRect(0,0,w,h);
+                p.forEach((a,i) => {
+                    a.up(); a.dr();
+                    p.slice(i+1).forEach(b => {
+                        let d = Math.hypot(a.x-b.x, a.y-b.y);
+                        if(d<120) { x.beginPath(); x.moveTo(a.x,a.y); x.lineTo(b.x,b.y); x.strokeStyle=`rgba(255,255,255,${(120-d)/1500})`; x.stroke(); }
                     });
                 });
                 requestAnimationFrame(loop);
             };
-            window.onresize = resize; resize();
-            for(let i=0;i<60;i++) particles.push(new Particle());
+            window.onresize = r; r();
+            for(let i=0;i<70;i++) p.push(new P());
             loop();
         };
 
-        // Run
-        initApp();
+        init();
     </script>
 </body>
 </html>
