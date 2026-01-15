@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>minimum</title>
     
-    <!-- Tailwind CSS (CDN) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Icons (Lucide) -->
+    <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Firebase SDKs (Compat v9/v10) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -39,12 +39,14 @@
                         danger: '#ef4444'
                     },
                     animation: {
-                        'fade-in': 'fadeIn 0.4s ease-out forwards',
+                        'fade-in': 'fadeIn 0.3s ease-out forwards',
                         'slide-up': 'slideUp 0.3s ease-out forwards',
+                        'pulse-rec': 'pulseRec 1.5s infinite',
                     },
                     keyframes: {
                         fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
-                        slideUp: { '0%': { transform: 'translateY(10px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+                        slideUp: { '0%': { transform: 'translateY(10px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        pulseRec: { '0%': { opacity: '1' }, '50%': { opacity: '0.5' }, '100%': { opacity: '1' } }
                     }
                 }
             }
@@ -54,29 +56,28 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap');
 
-        /* THEMES */
         :root[data-theme="dark"] {
-            --bg: #000000;
-            --surface: #121212;
-            --border: #262626;
-            --text: #ffffff;
-            --muted: #666666;
-            --accent: #ffffff;
-            --msg-own: #ffffff;
-            --msg-own-text: #000000;
-            --msg-other: #1c1c1c;
+            --bg: #09090b;
+            --surface: #18181b;
+            --border: #27272a;
+            --text: #fafafa;
+            --muted: #a1a1aa;
+            --accent: #fafafa;
+            --msg-own: #fafafa;
+            --msg-own-text: #09090b;
+            --msg-other: #27272a;
         }
 
         :root[data-theme="light"] {
             --bg: #ffffff;
-            --surface: #f3f4f6;
-            --border: #e5e7eb;
-            --text: #000000;
-            --muted: #9ca3af;
-            --accent: #000000;
-            --msg-own: #000000;
+            --surface: #f4f4f5;
+            --border: #e4e4e7;
+            --text: #09090b;
+            --muted: #71717a;
+            --accent: #09090b;
+            --msg-own: #09090b;
             --msg-own-text: #ffffff;
-            --msg-other: #f3f4f6;
+            --msg-other: #f4f4f5;
         }
 
         body {
@@ -84,35 +85,28 @@
             color: var(--text);
             transition: background-color 0.3s ease, color 0.3s ease;
             -webkit-tap-highlight-color: transparent;
-            height: 100dvh; /* Dynamic viewport height fix for mobile */
+            height: 100dvh;
             width: 100vw;
             overflow: hidden;
         }
 
-        /* Clean Scrollbar */
         .scroll-clean::-webkit-scrollbar { width: 4px; }
         .scroll-clean::-webkit-scrollbar-track { background: transparent; }
         .scroll-clean::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
-        /* Inputs */
         .input-clean {
             background: transparent;
             border: none;
             border-bottom: 1px solid var(--border);
             color: var(--text);
             border-radius: 0;
-            transition: border-color 0.2s;
             font-family: 'JetBrains Mono', monospace;
         }
-        .input-clean:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
+        .input-clean:focus { outline: none; border-color: var(--accent); }
 
-        /* Message Bubbles */
         .msg-bubble {
-            max-width: 80%;
-            padding: 10px 14px;
+            max-width: 85%;
+            padding: 8px 12px;
             font-size: 15px;
             line-height: 1.5;
             position: relative;
@@ -129,40 +123,78 @@
             border-radius: 18px 18px 18px 4px;
         }
 
-        /* Audio Player */
-        .waveform {
-            display: flex; gap: 2px; align-items: center; height: 16px;
+        /* Audio Player Styles */
+        .audio-player {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 160px;
+            padding: 4px 0;
+        }
+        .audio-bars {
+            display: flex;
+            gap: 2px;
+            align-items: center;
+            height: 20px;
         }
         .bar {
-            width: 2px; background: currentColor; opacity: 0.6;
-            animation: wave 1s infinite ease-in-out;
+            width: 3px;
+            background: currentColor;
+            opacity: 0.5;
+            border-radius: 2px;
+            transition: height 0.2s ease;
         }
-        @keyframes wave { 0%, 100% { height: 4px; } 50% { height: 100%; } }
+        .playing .bar {
+            animation: bounce 1s infinite ease-in-out;
+        }
+        @keyframes bounce { 
+            0%, 100% { height: 4px; } 
+            50% { height: 100%; } 
+        }
 
-        /* Error Overlay */
-        #errorOverlay {
-            display: none;
+        /* Toast Notifications */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            flex-col: column;
+            gap: 10px;
         }
+        .toast {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 99px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            font-size: 13px;
+            font-weight: 500;
+            animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
-<body class="flex flex-col antialiased">
+<body class="flex flex-col antialiased select-none">
 
-    <!-- ERROR OVERLAY (Failsafe) -->
-    <div id="errorOverlay" class="fixed inset-0 z-[9999] bg-black text-red-500 p-10 font-mono text-xs flex flex-col justify-center">
-        <h1 class="text-xl mb-4 font-bold">CRITICAL ERROR</h1>
-        <div id="errorText"></div>
-        <button onclick="location.reload()" class="mt-8 border border-red-500 px-4 py-2 hover:bg-red-900/20">RELOAD SYSTEM</button>
-    </div>
+    <!-- TOAST CONTAINER -->
+    <div id="toast-container"></div>
 
     <!-- BOOT LOADER -->
     <div id="bootScreen" class="fixed inset-0 z-[100] bg-bg flex items-center justify-center transition-opacity duration-500">
-        <img id="bootLogo" src="logo_w_nobg.png" class="w-20 h-20 object-contain animate-pulse">
+        <div class="flex flex-col items-center gap-4">
+            <div class="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
+            <span class="text-xs font-mono tracking-widest text-muted">LOADING</span>
+        </div>
     </div>
 
     <!-- AUTH VIEW -->
     <div id="viewAuth" class="fixed inset-0 z-50 bg-bg flex flex-col items-center justify-center hidden opacity-0 transition-opacity duration-700">
         <div class="w-full max-w-sm p-8 flex flex-col items-center animate-slide-up">
-            <img id="authLogo" src="logo_w_nobg.png" class="w-32 h-32 object-contain mb-8 hover:scale-105 transition-transform duration-500">
+            <div class="w-24 h-24 bg-surface rounded-full flex items-center justify-center mb-8 border border-border">
+                <i data-lucide="message-circle" class="w-10 h-10 text-text"></i>
+            </div>
             <h1 class="text-4xl font-light mb-12 tracking-tighter">minimum</h1>
             
             <button id="btnGoogle" class="w-full h-14 rounded-xl bg-surface border border-border flex items-center justify-center gap-3 hover:border-accent transition-all active:scale-[0.98] group">
@@ -176,18 +208,14 @@
     <div id="viewApp" class="flex-1 flex overflow-hidden relative opacity-0 transition-opacity duration-500 hidden">
         
         <!-- SIDEBAR -->
-        <div id="sidebar" class="w-full md:w-[380px] bg-bg border-r border-border flex flex-col h-full z-10 absolute md:relative transition-transform duration-300 md:transform-none">
+        <div id="sidebar" class="w-full md:w-[360px] bg-bg border-r border-border flex flex-col h-full z-10 absolute md:relative transition-transform duration-300 md:transform-none">
             
-            <!-- Sidebar Header -->
-            <div class="h-16 min-h-[64px] px-4 flex items-center justify-between border-b border-border bg-bg/95 backdrop-blur z-20 sticky top-0">
-                <div class="flex items-center gap-3 cursor-pointer group" onclick="app.openSettings()">
+            <!-- Header -->
+            <div class="h-16 px-4 flex items-center justify-between border-b border-border bg-bg/95 backdrop-blur z-20 sticky top-0">
+                <div class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity" onclick="app.openSettings()">
                     <div class="relative w-9 h-9">
                         <img id="myAvatar" class="w-full h-full rounded-full object-cover border border-border bg-surface">
                         <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-bg"></div>
-                    </div>
-                    <div class="flex flex-col">
-                        <span id="myNameDisplay" class="text-sm font-semibold leading-tight">...</span>
-                        <span class="text-[10px] text-muted font-mono tracking-wider">ONLINE</span>
                     </div>
                 </div>
                 <div class="flex gap-1">
@@ -200,17 +228,17 @@
                 </div>
             </div>
 
-            <!-- Search Bar -->
-            <div class="p-4">
+            <!-- Search -->
+            <div class="p-4 pb-2">
                 <div class="h-10 bg-surface rounded-xl flex items-center px-3 gap-3 border border-transparent focus-within:border-border transition-colors">
                     <i data-lucide="search" class="w-4 h-4 text-muted"></i>
-                    <input type="text" placeholder="Поиск" class="bg-transparent border-none outline-none text-sm w-full placeholder-muted h-full" id="filterChatInput">
+                    <input type="text" placeholder="Поиск чатов" class="bg-transparent border-none outline-none text-sm w-full placeholder-muted h-full" id="filterChatInput">
                 </div>
             </div>
 
-            <!-- Chat List -->
-            <div id="chatList" class="flex-1 overflow-y-auto scroll-clean pb-4 space-y-0.5 px-2">
-                <!-- Chats will appear here -->
+            <!-- List -->
+            <div id="chatList" class="flex-1 overflow-y-auto scroll-clean pb-4 space-y-1 px-2 pt-2">
+                <!-- Chats Rendered Here -->
             </div>
         </div>
 
@@ -218,42 +246,45 @@
         <div id="chatInterface" class="absolute inset-0 z-20 bg-bg flex flex-col transform translate-x-full md:translate-x-0 transition-transform duration-300 md:static md:flex-1">
             
             <!-- Chat Header -->
-            <div class="h-16 min-h-[64px] px-4 flex items-center justify-between border-b border-border bg-bg/95 backdrop-blur z-30">
+            <div class="h-16 px-4 flex items-center justify-between border-b border-border bg-bg/95 backdrop-blur z-30">
                 <div class="flex items-center gap-3 cursor-pointer" onclick="app.showChatInfo()">
                     <button class="md:hidden -ml-2 p-2 text-muted hover:text-text" onclick="event.stopPropagation(); app.closeChat()">
                         <i data-lucide="chevron-left" class="w-6 h-6"></i>
                     </button>
                     <img id="chatAvatar" class="w-9 h-9 rounded-full bg-surface object-cover">
-                    <div>
-                        <div id="chatName" class="font-medium text-sm">User</div>
-                        <div class="text-[10px] text-muted font-mono">ENCRYPTED</div>
+                    <div class="flex flex-col justify-center">
+                        <div id="chatName" class="font-medium text-sm leading-none mb-1">User</div>
+                        <div class="text-[10px] text-muted font-mono leading-none tracking-wide">ONLINE</div>
                     </div>
                 </div>
                 <button class="p-2 text-muted hover:text-text rounded-full hover:bg-surface" onclick="app.toggleChatMenu()">
                     <i data-lucide="more-vertical" class="w-5 h-5"></i>
                 </button>
                 
-                <!-- Chat Context Menu -->
-                <div id="chatMenu" class="absolute top-14 right-4 w-56 bg-bg border border-border rounded-xl shadow-2xl hidden flex-col py-1 z-50 animate-fade-in">
-                    <button class="px-4 py-3 text-left text-sm hover:bg-surface flex items-center gap-2" onclick="app.clearChat(false)">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i> Очистить у себя
+                <!-- Chat Menu -->
+                <div id="chatMenu" class="absolute top-14 right-4 w-52 bg-surface border border-border rounded-xl shadow-xl hidden flex-col py-1 z-50 animate-fade-in origin-top-right">
+                    <button class="px-4 py-3 text-left text-sm hover:bg-bg/50 flex items-center gap-2 transition-colors" onclick="app.clearChat()">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i> Очистить историю
                     </button>
-                    <button class="px-4 py-3 text-left text-sm hover:bg-surface flex items-center gap-2" onclick="app.clearChat(true)">
-                        <i data-lucide="trash" class="w-4 h-4"></i> Очистить у всех
-                    </button>
-                    <div class="h-[1px] bg-border my-1"></div>
-                    <button class="px-4 py-3 text-left text-sm text-danger hover:bg-red-500/10 flex items-center gap-2" onclick="app.blockUser()">
-                        <i data-lucide="ban" class="w-4 h-4"></i> Заблокировать
-                    </button>
-                    <button class="px-4 py-3 text-left text-sm text-danger hover:bg-red-500/10 flex items-center gap-2" onclick="app.deleteChat()">
+                    <div class="h-px bg-border my-1"></div>
+                    <button class="px-4 py-3 text-left text-sm text-danger hover:bg-red-500/10 flex items-center gap-2 transition-colors" onclick="app.deleteChat()">
                         <i data-lucide="x-circle" class="w-4 h-4"></i> Удалить чат
                     </button>
                 </div>
             </div>
 
-            <!-- Messages -->
+            <!-- Messages Area -->
             <div id="messagesContainer" class="flex-1 overflow-y-auto p-4 space-y-2 scroll-clean bg-bg" onclick="app.hideChatMenu()">
                 <!-- Messages -->
+            </div>
+
+            <!-- Recording Indicator -->
+            <div id="recordingIndicator" class="hidden px-4 py-2 bg-surface border-t border-border flex justify-between items-center text-xs text-danger font-mono font-bold">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-danger animate-pulse"></div>
+                    ЗАПИСЬ... <span id="recTimer">0:00</span>
+                </div>
+                <button onclick="app.cancelRecording()" class="hover:text-text">ОТМЕНА</button>
             </div>
 
             <!-- Edit Indicator -->
@@ -264,7 +295,7 @@
 
             <!-- Input Area -->
             <div class="p-3 md:p-4 bg-bg border-t border-border z-30">
-                <div class="flex items-end gap-2 bg-surface p-1.5 rounded-[20px] border border-border transition-colors focus-within:border-muted">
+                <div class="flex items-end gap-2 bg-surface p-1.5 rounded-[22px] border border-border transition-colors focus-within:border-muted">
                     <input type="file" id="fileInput" class="hidden" onchange="app.handleFileUpload(this)">
                     <button class="p-2.5 text-muted hover:text-text transition-colors rounded-full hover:bg-bg" onclick="document.getElementById('fileInput').click()">
                         <i data-lucide="paperclip" class="w-5 h-5"></i>
@@ -272,49 +303,50 @@
                     
                     <textarea id="msgInput" rows="1" placeholder="Сообщение..." class="flex-1 bg-transparent border-none outline-none text-[15px] py-2.5 px-1 max-h-32 resize-none placeholder-muted" style="min-height: 24px;"></textarea>
                     
-                    <button id="btnMic" class="p-2.5 text-muted hover:text-text transition-colors rounded-full hover:bg-bg" onclick="app.toggleRecording()">
-                        <i data-lucide="mic" class="w-5 h-5"></i>
-                    </button>
-                    
-                    <button id="btnSend" class="hidden p-2.5 bg-accent text-bg rounded-full hover:opacity-90 transition-all active:scale-95" onclick="app.sendMessage()">
-                        <i data-lucide="arrow-up" class="w-5 h-5"></i>
-                    </button>
+                    <!-- Send/Mic Button -->
+                    <div class="relative">
+                        <button id="btnMic" class="p-2.5 text-muted hover:text-text transition-colors rounded-full hover:bg-bg" onclick="app.toggleRecording()">
+                            <i data-lucide="mic" class="w-5 h-5"></i>
+                        </button>
+                        <button id="btnSend" class="hidden p-2.5 bg-accent text-bg rounded-full hover:opacity-90 transition-all active:scale-95 absolute inset-0 transform scale-0 transition-transform duration-200" onclick="app.sendMessage()">
+                            <i data-lucide="arrow-up" class="w-5 h-5"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             
-            <!-- Empty State for Desktop -->
-            <div id="emptyState" class="absolute inset-0 flex flex-col items-center justify-center bg-bg z-10 md:flex hidden">
+            <!-- Desktop Empty State -->
+            <div id="emptyState" class="absolute inset-0 flex flex-col items-center justify-center bg-bg z-10 md:flex hidden pointer-events-none">
                 <span class="text-xs font-mono tracking-[0.2em] text-muted">SELECT A CHAT</span>
             </div>
         </div>
-
     </div>
 
-    <!-- MODALS -->
-
-    <!-- Search Modal -->
-    <div id="modalSearch" class="fixed inset-0 z-50 bg-bg/90 backdrop-blur-sm hidden flex pt-24 justify-center px-4" onclick="if(event.target === this) app.closeSearch()">
+    <!-- SEARCH MODAL -->
+    <div id="modalSearch" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex pt-20 justify-center px-4" onclick="if(event.target === this) app.closeSearch()">
         <div class="w-full max-w-md bg-bg border border-border rounded-2xl shadow-2xl overflow-hidden animate-slide-up">
             <div class="flex items-center border-b border-border p-3 gap-3">
                 <i data-lucide="search" class="w-5 h-5 text-muted ml-2"></i>
                 <input id="userSearchInput" class="flex-1 bg-transparent outline-none h-10 text-sm placeholder-muted" placeholder="Поиск пользователя (@username)">
                 <button onclick="app.closeSearch()" class="p-2 hover:bg-surface rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
-            <div id="searchResults" class="min-h-[100px] max-h-[300px] overflow-y-auto p-2"></div>
+            <div id="searchResults" class="min-h-[100px] max-h-[300px] overflow-y-auto p-2">
+                <div class="flex items-center justify-center h-24 text-muted text-xs">Введите имя...</div>
+            </div>
         </div>
     </div>
 
-    <!-- Settings Modal -->
+    <!-- SETTINGS MODAL -->
     <div id="modalSettings" class="fixed inset-0 z-50 bg-bg hidden flex flex-col translate-y-full transition-transform duration-300">
         <div class="h-16 px-4 flex items-center justify-between border-b border-border">
-            <h2 class="font-bold">Settings</h2>
+            <h2 class="font-bold">Настройки</h2>
             <button onclick="app.closeSettings()" class="p-2 rounded-full hover:bg-surface"><i data-lucide="x" class="w-6 h-6"></i></button>
         </div>
         <div class="flex-1 overflow-y-auto p-6 max-w-2xl mx-auto w-full">
             <div class="flex flex-col items-center mb-10">
-                <div class="relative w-28 h-28 mb-4 group cursor-pointer">
-                    <img id="settingsAvatar" class="w-full h-full rounded-full object-cover border-2 border-border group-hover:border-accent transition-colors">
-                    <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <div class="relative w-28 h-28 mb-4 group cursor-pointer overflow-hidden rounded-full">
+                    <img id="settingsAvatar" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                         <i data-lucide="camera" class="w-8 h-8 text-white"></i>
                     </div>
                     <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" onchange="app.updateAvatar(this)">
@@ -333,34 +365,26 @@
                     <input id="editUsername" class="w-full input-clean py-2 text-lg font-mono">
                 </div>
                 
-                <button onclick="app.saveProfile()" class="w-full py-3 bg-accent text-bg rounded-xl font-bold mt-4">Save Changes</button>
-                
-                <div class="h-px bg-border my-6"></div>
-
-                <div class="p-4 bg-surface rounded-xl text-sm">
-                    <div class="font-bold mb-2">Information</div>
-                    <div class="text-muted space-y-1 text-xs">
-                        <p>Version 3.0.0 (OLED Edition)</p>
-                        <p class="flex items-center gap-1">
-                            Icons by <a href="https://icons8.com" target="_blank" class="underline hover:text-text">Icons8</a> & Lucide
-                        </p>
-                    </div>
-                </div>
-
-                <button onclick="app.logout()" class="w-full py-4 text-danger font-bold text-sm hover:bg-red-500/10 rounded-xl transition-colors">
-                    Log Out
-                </button>
+                <button onclick="app.saveProfile()" class="w-full py-3 bg-accent text-bg rounded-xl font-bold mt-4 hover:opacity-90 transition-opacity">Сохранить</button>
+                <button onclick="app.logout()" class="w-full py-4 text-danger font-bold text-sm hover:bg-red-500/10 rounded-xl transition-colors">Выйти</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- GLOBAL ERROR HANDLER ---
-        window.onerror = function(msg, url, line, col, error) {
-            document.getElementById('errorOverlay').style.display = 'flex';
-            document.getElementById('errorText').innerText = `${msg}\nLine: ${line}`;
-            return false;
-        };
+        // --- HELPER: TOASTS ---
+        function showToast(msg, type = 'normal') {
+            const el = document.createElement('div');
+            el.className = 'toast';
+            el.innerText = msg;
+            if (type === 'error') el.style.borderColor = 'var(--danger)';
+            document.getElementById('toast-container').appendChild(el);
+            setTimeout(() => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(-20px)';
+                setTimeout(() => el.remove(), 300);
+            }, 3000);
+        }
 
         // --- FIREBASE CONFIG ---
         const firebaseConfig = {
@@ -372,7 +396,6 @@
           appId: "1:583321384135:web:2b9f7cae0f37419341fae2"
         };
 
-        // --- APP CONTROLLER ---
         const app = {
             db: null,
             auth: null,
@@ -380,24 +403,26 @@
             activeChat: null,
             theme: localStorage.getItem('theme') || 'dark',
             unsubscribeMsg: null,
+            unsubscribeChats: null,
+            userCache: {},
             editingId: null,
+            
+            // Audio vars
             mediaRecorder: null,
-            chunks: [],
+            audioChunks: [],
+            recInterval: null,
+            recStartTime: 0,
 
             init: function() {
                 try {
-                    // Init Theme First
                     document.documentElement.setAttribute('data-theme', this.theme);
-                    this.updateLogos();
+                    this.updateIcons();
 
                     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
                     this.auth = firebase.auth();
                     this.db = firebase.firestore();
-
-                    // Persistence
-                    this.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-
-                    // Auth Listener
+                    // Fix: Enable offline persistence if possible, but keep it simple for now
+                    
                     this.auth.onAuthStateChanged(user => {
                         const boot = document.getElementById('bootScreen');
                         if (user) {
@@ -412,31 +437,22 @@
                     this.setupUI();
                 } catch (e) {
                     console.error("Init Error:", e);
-                    alert("App Init Failed: " + e.message);
+                    showToast("Ошибка запуска: " + e.message, 'error');
                 }
             },
 
-            updateLogos: function() {
-                const src = this.theme === 'dark' ? 'logo_w_nobg.png' : 'logo_b_nobg.png';
-                ['bootLogo', 'authLogo'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if(el) el.src = src;
-                });
+            updateIcons: function() {
                 const icon = this.theme === 'dark' ? 'sun' : 'moon';
                 document.getElementById('iconTheme').setAttribute('data-lucide', icon);
                 lucide.createIcons();
             },
 
             loadUser: async function() {
-                // Remove Boot Screen
                 document.getElementById('bootScreen').classList.add('opacity-0', 'pointer-events-none');
-                
                 try {
                     let doc = await this.db.collection('users').doc(this.user.uid).get();
-                    
-                    // Create if not exists
                     if (!doc.exists) {
-                        const username = 'user' + Math.floor(Math.random() * 100000);
+                        const username = 'user' + Math.floor(Math.random() * 10000);
                         await this.db.collection('users').doc(this.user.uid).set({
                             displayName: this.user.displayName || 'User',
                             email: this.user.email,
@@ -446,197 +462,307 @@
                         });
                         doc = await this.db.collection('users').doc(this.user.uid).get();
                     }
-
-                    const data = doc.data();
-                    this.renderProfile(data);
+                    this.renderProfile(doc.data());
                     this.showApp();
-                    this.loadChats();
+                    this.startChatListener();
                 } catch(e) {
                     console.error(e);
-                    // If rules block access, this catches it
+                    showToast("Ошибка загрузки профиля", 'error');
                 }
             },
 
             renderProfile: function(data) {
-                const defImg = this.theme === 'dark' ? 'logo_w_nobg.png' : 'logo_b_nobg.png';
-                const img = data.photoURL || defImg;
-                
+                const img = data.photoURL || 'https://ui-avatars.com/api/?name=' + data.displayName;
                 document.getElementById('myAvatar').src = img;
-                document.getElementById('myNameDisplay').innerText = data.displayName;
                 document.getElementById('settingsAvatar').src = img;
                 document.getElementById('settingsName').innerText = data.displayName;
                 document.getElementById('settingsUsername').innerText = '@' + data.username;
-                
                 document.getElementById('editName').value = data.displayName;
                 document.getElementById('editUsername').value = data.username;
             },
 
             showApp: function() {
                 document.getElementById('viewAuth').classList.add('hidden');
-                const v = document.getElementById('viewApp');
-                v.classList.remove('hidden');
-                setTimeout(() => v.classList.remove('opacity-0'), 50);
+                document.getElementById('viewApp').classList.remove('hidden');
+                setTimeout(() => document.getElementById('viewApp').classList.remove('opacity-0'), 50);
             },
             
             showAuth: function() {
                 document.getElementById('viewApp').classList.add('hidden');
-                const v = document.getElementById('viewAuth');
-                v.classList.remove('hidden');
-                setTimeout(() => v.classList.remove('opacity-0'), 50);
+                document.getElementById('viewAuth').classList.remove('hidden');
+                setTimeout(() => document.getElementById('viewAuth').classList.remove('opacity-0'), 50);
             },
 
-            loadChats: function() {
-                this.db.collection('chats')
+            // --- CHAT LIST (OPTIMIZED) ---
+            startChatListener: function() {
+                if(this.unsubscribeChats) this.unsubscribeChats();
+                
+                this.unsubscribeChats = this.db.collection('chats')
                     .where('participants', 'array-contains', this.user.uid)
-                    .onSnapshot(snap => {
+                    .onSnapshot(async snap => {
                         const list = document.getElementById('chatList');
+                        
+                        // Collect data first
                         const chats = [];
                         snap.forEach(doc => chats.push({ id: doc.id, ...doc.data() }));
-                        
-                        // Sort by time
                         chats.sort((a,b) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0));
-                        
+
+                        // Pre-fetch unknown users in parallel
+                        const unknownUserIds = new Set();
+                        chats.forEach(c => {
+                            const uid = c.participants.find(p => p !== this.user.uid);
+                            if(uid && !this.userCache[uid]) unknownUserIds.add(uid);
+                        });
+
+                        if(unknownUserIds.size > 0) {
+                            await Promise.all(Array.from(unknownUserIds).map(async uid => {
+                                try {
+                                    const d = await this.db.collection('users').doc(uid).get();
+                                    this.userCache[uid] = d.data() || { displayName: 'Deleted', photoURL: null };
+                                } catch(e) { this.userCache[uid] = { displayName: 'Unknown', photoURL: null }; }
+                            }));
+                        }
+
+                        // Efficient Rendering: only rebuild if list changed drastically or simple clear (for small lists)
+                        // For simplicity in this demo, we rebuild the HTML string but use the cache so it's instant
+                        // To avoid image flickering, we could diff, but simple innerHTML is fast enough if images are cached by browser
                         list.innerHTML = '';
-                        chats.forEach(async chat => {
+                        
+                        chats.forEach(chat => {
                             if(chat.deletedBy && chat.deletedBy.includes(this.user.uid)) return;
 
                             const otherId = chat.participants.find(u => u !== this.user.uid);
-                            // Simple fetch (In prod, use cache)
-                            const uSnap = await this.db.collection('users').doc(otherId).get();
-                            const u = uSnap.data() || { displayName: 'Unknown', photoURL: null };
-                            
-                            const defImg = this.theme === 'dark' ? 'logo_w_nobg.png' : 'logo_b_nobg.png';
+                            const u = this.userCache[otherId] || { displayName: 'Loading...', photoURL: null };
+                            const img = u.photoURL || 'https://ui-avatars.com/api/?background=random&name=' + u.displayName;
                             
                             const div = document.createElement('div');
                             const isActive = this.activeChat === chat.id;
-                            div.className = `p-3 mx-1 rounded-xl flex items-center gap-3 cursor-pointer transition-colors ${isActive ? 'bg-surface' : 'hover:bg-surface/50'}`;
+                            div.className = `p-3 rounded-xl flex items-center gap-3 cursor-pointer transition-all ${isActive ? 'bg-surface border border-border shadow-sm' : 'hover:bg-surface/50 border border-transparent'}`;
                             
-                            // Time
                             let timeStr = "";
                             if(chat.lastMessageTime) {
                                 const d = new Date(chat.lastMessageTime);
                                 timeStr = `${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
                             }
 
+                            const lastMsg = chat.lastMessage || 'Нет сообщений';
+                            const prefix = chat.lastSenderId === this.user.uid ? 'Вы: ' : '';
+
                             div.innerHTML = `
-                                <img src="${u.photoURL || defImg}" class="w-12 h-12 rounded-full bg-border object-cover">
-                                <div class="flex-1 min-w-0">
+                                <img src="${img}" class="w-12 h-12 rounded-full bg-border object-cover flex-shrink-0">
+                                <div class="flex-1 min-w-0 overflow-hidden">
                                     <div class="flex justify-between items-baseline mb-0.5">
-                                        <h4 class="font-medium text-sm truncate ${isActive ? 'text-accent' : ''}">${u.displayName}</h4>
-                                        <span class="text-[10px] text-muted font-mono">${timeStr}</span>
+                                        <h4 class="font-medium text-sm truncate pr-2 ${isActive ? 'text-accent' : ''}">${u.displayName}</h4>
+                                        <span class="text-[10px] text-muted font-mono flex-shrink-0">${timeStr}</span>
                                     </div>
                                     <p class="text-[13px] text-muted truncate opacity-80">
-                                        ${chat.lastSenderId === this.user.uid ? '<span class="text-text">You:</span> ' : ''}
-                                        ${chat.lastMessage || 'Начните общение'}
+                                        <span class="text-text/70">${prefix}</span>${lastMsg}
                                     </p>
                                 </div>
                             `;
                             div.onclick = () => this.openChat(chat.id, u);
                             list.appendChild(div);
                         });
+                    }, err => {
+                        console.error(err);
+                        // showToast("Ошибка синхронизации чатов", 'error');
                     });
             },
 
+            // --- OPEN CHAT (FIXED FLICKERING) ---
             openChat: function(chatId, user) {
+                if (this.activeChat === chatId) return; // Don't reload if already open
+                
                 this.activeChat = chatId;
                 
-                // UI Mobile Switch
+                // UI Logic
                 const sidebar = document.getElementById('sidebar');
                 const chatInterface = document.getElementById('chatInterface');
-                
                 if (window.innerWidth < 768) {
                     sidebar.style.transform = 'translateX(-100%)';
                     chatInterface.style.transform = 'translateX(0)';
                 }
-                document.getElementById('emptyState').classList.add('hidden'); // Hide desktop empty state
-
-                // Set Header
-                const defImg = this.theme === 'dark' ? 'logo_w_nobg.png' : 'logo_b_nobg.png';
+                document.getElementById('emptyState').classList.add('hidden');
+                document.getElementById('emptyState').classList.remove('flex'); // Fix flex/hidden conflict
+                
+                // Update Header
+                const img = user.photoURL || 'https://ui-avatars.com/api/?background=random&name=' + user.displayName;
                 document.getElementById('chatName').innerText = user.displayName;
-                document.getElementById('chatAvatar').src = user.photoURL || defImg;
+                document.getElementById('chatAvatar').src = img;
 
-                // Load Messages
+                // Re-render chat list to highlight active
+                this.startChatListener();
+
+                // Messages
                 if (this.unsubscribeMsg) this.unsubscribeMsg();
                 const container = document.getElementById('messagesContainer');
-                container.innerHTML = '';
+                container.innerHTML = ''; // Clear only on chat switch
                 
                 this.unsubscribeMsg = this.db.collection('chats').doc(chatId).collection('messages')
                     .orderBy('timestamp', 'asc')
                     .onSnapshot(snap => {
-                        container.innerHTML = '';
-                        snap.forEach(doc => {
-                            const msg = doc.data();
-                            if(msg.deletedFor && msg.deletedFor.includes(this.user.uid)) return;
-
-                            const isOwn = msg.senderId === this.user.uid;
-                            
-                            const wrap = document.createElement('div');
-                            wrap.className = `flex w-full ${isOwn ? 'justify-end' : 'justify-start'} animate-fade-in group relative`;
-                            
-                            // Context Menu Button (Desktop: Hover, Mobile: Long press logic simplified)
-                            let actions = '';
-                            if (isOwn) {
-                                actions = `
-                                    <div class="absolute top-0 ${isOwn ? '-left-8' : '-right-8'} opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-1">
-                                        <button onclick="app.startEdit('${doc.id}', '${msg.text.replace(/'/g, "\\'")}', '${msg.type}')" class="p-1 text-muted hover:text-text"><i data-lucide="pencil" class="w-3 h-3"></i></button>
-                                        <button onclick="app.deleteMessage('${doc.id}')" class="p-1 text-muted hover:text-danger"><i data-lucide="trash" class="w-3 h-3"></i></button>
-                                    </div>
-                                `;
+                        // SMART UPDATE (No flickering)
+                        snap.docChanges().forEach(change => {
+                            if (change.type === "added") {
+                                this.appendMessage(change.doc, container);
+                                this.scrollToBottom();
                             }
-
-                            // Content Rendering
-                            let contentHtml = '';
-                            if (msg.type === 'text') {
-                                contentHtml = `<span class="whitespace-pre-wrap">${msg.text}</span>`;
-                            } else if (msg.type === 'image') {
-                                contentHtml = `<img src="${msg.content}" class="rounded-lg max-w-full md:max-w-xs cursor-pointer" onclick="window.open(this.src)">`;
-                            } else if (msg.type === 'audio') {
-                                contentHtml = `
-                                    <div class="flex items-center gap-3 min-w-[140px]">
-                                        <button class="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center hover:bg-accent/40" onclick="new Audio('${msg.content}').play()">
-                                            <i data-lucide="play" class="w-3 h-3 text-accent fill-current"></i>
-                                        </button>
-                                        <div class="waveform flex-1">
-                                            ${Array(12).fill(0).map(()=>`<div class="bar" style="height: ${Math.random()*100}%"></div>`).join('')}
-                                        </div>
-                                    </div>
-                                `;
+                            if (change.type === "modified") {
+                                this.updateMessageDOM(change.doc);
                             }
-
-                            // Timestamp
-                            const d = new Date(msg.timestamp);
-                            const tStr = `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
-
-                            wrap.innerHTML = `
-                                ${actions}
-                                <div class="msg-bubble ${isOwn ? 'msg-own' : 'msg-other'} shadow-sm">
-                                    ${contentHtml}
-                                    <div class="text-[9px] text-right opacity-60 mt-1 flex justify-end gap-1 items-center">
-                                        ${msg.edited ? '<span>(ред.)</span>' : ''}
-                                        ${tStr}
-                                        ${isOwn ? '<i data-lucide="check" class="w-3 h-3"></i>' : ''}
-                                    </div>
-                                </div>
-                            `;
-                            container.appendChild(wrap);
+                            if (change.type === "removed") {
+                                const el = document.getElementById(`msg-${change.doc.id}`);
+                                if(el) el.remove();
+                            }
                         });
-                        lucide.createIcons();
-                        container.scrollTop = container.scrollHeight;
                     });
             },
 
-            closeChat: function() {
-                this.activeChat = null;
-                const sidebar = document.getElementById('sidebar');
-                const chatInterface = document.getElementById('chatInterface');
+            appendMessage: function(doc, container) {
+                const msg = doc.data();
+                if(msg.deletedFor && msg.deletedFor.includes(this.user.uid)) return;
+
+                const isOwn = msg.senderId === this.user.uid;
+                const wrap = document.createElement('div');
+                wrap.id = `msg-${doc.id}`;
+                wrap.className = `flex w-full ${isOwn ? 'justify-end' : 'justify-start'} animate-fade-in group relative mb-2`;
                 
-                if (window.innerWidth < 768) {
-                    sidebar.style.transform = 'translateX(0)';
-                    chatInterface.style.transform = 'translateX(100%)';
+                // Context Actions
+                let actions = '';
+                if (isOwn) {
+                    actions = `
+                        <div class="absolute top-0 ${isOwn ? '-left-8' : '-right-8'} opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-1 z-10">
+                            ${msg.type === 'text' ? `<button onclick="app.startEdit('${doc.id}', '${msg.text.replace(/'/g, "\\'")}')" class="p-1 text-muted hover:text-text"><i data-lucide="pencil" class="w-3 h-3"></i></button>` : ''}
+                            <button onclick="app.deleteMessage('${doc.id}')" class="p-1 text-muted hover:text-danger"><i data-lucide="trash" class="w-3 h-3"></i></button>
+                        </div>
+                    `;
+                }
+
+                // Content
+                let contentHtml = '';
+                if (msg.type === 'text') {
+                    contentHtml = `<span class="whitespace-pre-wrap msg-text">${msg.text}</span>`;
+                } else if (msg.type === 'image') {
+                    contentHtml = `<img src="${msg.content}" class="rounded-lg max-w-full md:max-w-xs cursor-pointer hover:opacity-90 transition-opacity" onclick="window.open(this.src)">`;
+                } else if (msg.type === 'audio') {
+                    // Unique ID for audio element
+                    const audioId = `audio-${doc.id}`;
+                    contentHtml = `
+                        <div class="audio-player">
+                            <button class="w-8 h-8 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center hover:bg-black/20 dark:hover:bg-white/20 transition-colors" onclick="app.playAudio('${audioId}', this)">
+                                <i data-lucide="play" class="w-3 h-3 fill-current"></i>
+                            </button>
+                            <div class="audio-bars" id="bars-${audioId}">
+                                ${Array(10).fill(0).map(() => `<div class="bar" style="height: ${30 + Math.random()*70}%"></div>`).join('')}
+                            </div>
+                            <span class="text-[10px] font-mono opacity-60 ml-1">VOICE</span>
+                            <audio id="${audioId}" src="${msg.content}" onended="app.resetAudioBtn(this)"></audio>
+                        </div>
+                    `;
+                }
+
+                const d = new Date(msg.timestamp);
+                const tStr = `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+
+                wrap.innerHTML = `
+                    ${actions}
+                    <div class="msg-bubble ${isOwn ? 'msg-own' : 'msg-other'} shadow-sm">
+                        <div class="msg-content-wrapper">${contentHtml}</div>
+                        <div class="text-[9px] text-right opacity-60 mt-1 flex justify-end gap-1 items-center select-none">
+                            <span class="edited-mark ${msg.edited ? '' : 'hidden'}">(ред.)</span>
+                            ${tStr}
+                            ${isOwn ? '<i data-lucide="check" class="w-3 h-3"></i>' : ''}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(wrap);
+                lucide.createIcons();
+            },
+
+            updateMessageDOM: function(doc) {
+                const msg = doc.data();
+                const wrap = document.getElementById(`msg-${doc.id}`);
+                if(!wrap) return; // Should not happen
+
+                // Update text content if text message
+                if(msg.type === 'text') {
+                    const txt = wrap.querySelector('.msg-text');
+                    if(txt) txt.innerText = msg.text;
+                }
+                
+                // Show edited mark
+                if(msg.edited) {
+                    const mark = wrap.querySelector('.edited-mark');
+                    if(mark) mark.classList.remove('hidden');
                 }
             },
 
-            // --- MESSAGING ---
+            scrollToBottom: function() {
+                const c = document.getElementById('messagesContainer');
+                c.scrollTop = c.scrollHeight;
+            },
+
+            // --- AUDIO PLAYBACK ---
+            playAudio: function(id, btn) {
+                const audio = document.getElementById(id);
+                const icon = btn.querySelector('i');
+                const bars = document.getElementById('bars-' + id);
+                
+                // Stop all others
+                document.querySelectorAll('audio').forEach(a => {
+                    if(a.id !== id && !a.paused) {
+                        a.pause();
+                        a.currentTime = 0;
+                        this.resetAudioBtn(a);
+                    }
+                });
+
+                if (audio.paused) {
+                    audio.play();
+                    icon.setAttribute('data-lucide', 'pause');
+                    bars.classList.add('playing');
+                } else {
+                    audio.pause();
+                    icon.setAttribute('data-lucide', 'play');
+                    bars.classList.remove('playing');
+                }
+                lucide.createIcons();
+            },
+
+            resetAudioBtn: function(audio) {
+                const btn = audio.parentElement.querySelector('button');
+                const bars = audio.parentElement.querySelector('.audio-bars');
+                if(btn) {
+                    btn.querySelector('i').setAttribute('data-lucide', 'play');
+                    lucide.createIcons();
+                }
+                if(bars) bars.classList.remove('playing');
+            },
+
+            // --- MESSAGING LOGIC ---
+            checkInput: function() {
+                const val = document.getElementById('msgInput').value.trim();
+                const hasText = val.length > 0;
+                
+                const btnMic = document.getElementById('btnMic');
+                const btnSend = document.getElementById('btnSend');
+                
+                if (hasText) {
+                    btnMic.classList.add('hidden');
+                    btnSend.classList.remove('hidden', 'scale-0');
+                    btnSend.classList.add('scale-100');
+                } else {
+                    btnSend.classList.remove('scale-100');
+                    btnSend.classList.add('scale-0');
+                    setTimeout(() => btnSend.classList.add('hidden'), 200);
+                    btnMic.classList.remove('hidden');
+                }
+                
+                const el = document.getElementById('msgInput');
+                el.style.height = 'auto';
+                el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+            },
+
             sendMessage: async function(type = 'text', content = null) {
                 if (!this.activeChat) return;
                 
@@ -650,16 +776,17 @@
 
                 if (type === 'text' && !text) return;
 
-                // Reset Input
+                // UI Reset
                 input.value = '';
                 this.checkInput();
                 
                 const msg = {
-                    text: type === 'text' ? text : (type === 'image' ? 'Фото' : 'Аудио'),
+                    text: type === 'text' ? text : (type === 'image' ? 'Фото' : 'Голосовое'),
                     type: type,
-                    content: content, // base64
+                    content: content, 
                     senderId: this.user.uid,
-                    timestamp: Date.now()
+                    timestamp: Date.now(),
+                    edited: false
                 };
 
                 try {
@@ -671,17 +798,100 @@
                     });
                 } catch(e) {
                     console.error(e);
-                    alert("Ошибка отправки. Проверьте правила доступа.");
+                    showToast("Не удалось отправить. Проверьте соединение.", 'error');
                 }
             },
 
-            // --- EDIT / DELETE MSG ---
-            startEdit: function(id, text, type) {
-                if (type !== 'text') return;
+            // --- RECORDING (FIXED) ---
+            toggleRecording: async function() {
+                if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
+                    // Should be handled by cancel or stop button, but just in case
+                    this.stopRecording();
+                    return;
+                }
+
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    this.mediaRecorder = new MediaRecorder(stream);
+                    this.audioChunks = [];
+                    
+                    document.getElementById('recordingIndicator').classList.remove('hidden');
+                    document.getElementById('recordingIndicator').classList.add('flex');
+                    document.getElementById('msgInput').disabled = true;
+
+                    // Start Timer
+                    this.recStartTime = Date.now();
+                    this.recInterval = setInterval(() => {
+                        const s = Math.floor((Date.now() - this.recStartTime) / 1000);
+                        const m = Math.floor(s/60);
+                        const sec = s%60;
+                        document.getElementById('recTimer').innerText = `${m}:${String(sec).padStart(2,'0')}`;
+                    }, 1000);
+
+                    this.mediaRecorder.ondataavailable = e => {
+                        if (e.data.size > 0) this.audioChunks.push(e.data);
+                    };
+
+                    this.mediaRecorder.onstop = () => {
+                        this.cleanupRecordingUI();
+                        
+                        // Check if we actually recorded something useful
+                        const blob = new Blob(this.audioChunks, { type: 'audio/webm' });
+                        if (blob.size < 1000) { // < 1kb is likely error or instant click
+                            console.log("Audio too short");
+                            return; 
+                        }
+
+                        const reader = new FileReader();
+                        reader.readAsDataURL(blob);
+                        reader.onloadend = () => {
+                            this.sendMessage('audio', reader.result);
+                        }
+                    };
+                    
+                    // Collect chunks every 200ms
+                    this.mediaRecorder.start(200);
+
+                } catch(e) {
+                    console.error(e);
+                    showToast("Нет доступа к микрофону", 'error');
+                }
+            },
+
+            cancelRecording: function() {
+                if (this.mediaRecorder) {
+                    // Remove onstop handler to prevent sending
+                    this.mediaRecorder.onstop = null;
+                    this.mediaRecorder.stop();
+                }
+                this.cleanupRecordingUI();
+            },
+
+            stopRecording: function() {
+                 if (this.mediaRecorder) this.mediaRecorder.stop();
+            },
+
+            cleanupRecordingUI: function() {
+                clearInterval(this.recInterval);
+                document.getElementById('recTimer').innerText = "0:00";
+                document.getElementById('recordingIndicator').classList.add('hidden');
+                document.getElementById('recordingIndicator').classList.remove('flex');
+                document.getElementById('msgInput').disabled = false;
+                
+                // Release stream tracks
+                if(this.mediaRecorder && this.mediaRecorder.stream) {
+                    this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                }
+                this.mediaRecorder = null;
+            },
+
+            // --- EDITING ---
+            startEdit: function(id, text) {
                 this.editingId = id;
                 const input = document.getElementById('msgInput');
                 input.value = text;
                 input.focus();
+                this.checkInput();
                 document.getElementById('editIndicator').classList.remove('hidden');
                 document.getElementById('editIndicator').classList.add('flex');
             },
@@ -696,62 +906,59 @@
 
             finishEdit: async function(text) {
                 if (!text) return;
-                await this.db.collection('chats').doc(this.activeChat).collection('messages').doc(this.editingId).update({
-                    text: text,
-                    edited: true
-                });
-                this.cancelEdit();
-            },
-
-            deleteMessage: async function(id) {
-                if(confirm("Удалить сообщение у всех?")) {
-                    await this.db.collection('chats').doc(this.activeChat).collection('messages').doc(id).delete();
+                try {
+                    await this.db.collection('chats').doc(this.activeChat).collection('messages').doc(this.editingId).update({
+                        text: text,
+                        edited: true
+                    });
+                    this.cancelEdit();
+                } catch(e) {
+                    showToast("Ошибка редактирования", 'error');
                 }
             },
 
-            // --- FILE & AUDIO ---
+            deleteMessage: async function(id) {
+                if(confirm("Удалить сообщение?")) {
+                    try {
+                        await this.db.collection('chats').doc(this.activeChat).collection('messages').doc(id).delete();
+                    } catch(e) { showToast("Ошибка удаления", 'error'); }
+                }
+            },
+
+            // --- FILE UPLOAD ---
             handleFileUpload: function(input) {
                 const file = input.files[0];
                 if (!file) return;
                 
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    // Simple compression/resize check would go here
-                    this.sendMessage('image', e.target.result);
-                };
-                reader.readAsDataURL(file);
-            },
-
-            toggleRecording: async function() {
-                if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
-                    this.mediaRecorder.stop();
-                    document.getElementById('btnMic').classList.remove('text-red-500', 'animate-pulse');
+                if (file.size > 2 * 1024 * 1024) {
+                    showToast("Файл слишком большой (макс 2МБ)", 'error');
                     return;
                 }
 
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    this.mediaRecorder = new MediaRecorder(stream);
-                    this.chunks = [];
-                    
-                    document.getElementById('btnMic').classList.add('text-red-500', 'animate-pulse');
-
-                    this.mediaRecorder.ondataavailable = e => this.chunks.push(e.data);
-                    this.mediaRecorder.onstop = () => {
-                        const blob = new Blob(this.chunks, { type: 'audio/webm' });
-                        const reader = new FileReader();
-                        reader.readAsDataURL(blob);
-                        reader.onloadend = () => {
-                            this.sendMessage('audio', reader.result);
-                        }
-                    };
-                    this.mediaRecorder.start();
-                } catch(e) {
-                    alert("Нужен доступ к микрофону");
-                }
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.sendMessage('image', e.target.result);
+                };
+                reader.readAsDataURL(file);
+                input.value = ''; // Reset
             },
 
-            // --- CHAT ACTIONS ---
+            // --- NAV / MISC ---
+            closeChat: function() {
+                this.activeChat = null;
+                if(this.unsubscribeMsg) this.unsubscribeMsg();
+                
+                const sidebar = document.getElementById('sidebar');
+                const chatInterface = document.getElementById('chatInterface');
+                
+                if (window.innerWidth < 768) {
+                    sidebar.style.transform = 'translateX(0)';
+                    chatInterface.style.transform = 'translateX(100%)';
+                }
+                document.getElementById('emptyState').classList.remove('hidden');
+                document.getElementById('emptyState').classList.add('flex');
+            },
+
             toggleChatMenu: () => {
                 const m = document.getElementById('chatMenu');
                 m.classList.toggle('hidden');
@@ -759,56 +966,28 @@
             },
             hideChatMenu: () => document.getElementById('chatMenu').classList.add('hidden'),
 
-            clearChat: async function(everyone) {
-                if(!confirm("Вы уверены?")) return;
+            clearChat: async function() {
+                if(!confirm("Удалить все сообщения?")) return;
+                const ref = this.db.collection('chats').doc(this.activeChat).collection('messages');
+                const q = await ref.get();
                 const batch = this.db.batch();
-                const q = await this.db.collection('chats').doc(this.activeChat).collection('messages').get();
-                
-                if (everyone) {
-                    q.forEach(doc => batch.delete(doc.ref));
-                } else {
-                    // Soft delete simulation
-                    // In real app, write to subcollection 'deletedMessages'
-                    alert("Локальная очистка (Демо)");
-                }
+                q.forEach(doc => batch.delete(doc.ref));
                 await batch.commit();
                 this.hideChatMenu();
             },
 
-            blockUser: function() {
-                alert("Пользователь заблокирован");
-                this.hideChatMenu();
-                this.closeChat();
-            },
-
             deleteChat: async function() {
-                if(!confirm("Удалить чат навсегда?")) return;
+                if(!confirm("Удалить чат?")) return;
                 await this.db.collection('chats').doc(this.activeChat).delete();
-                this.activeChat = null;
                 this.closeChat();
             },
 
-            // --- THEME ---
             toggleTheme: function() {
                 this.theme = this.theme === 'dark' ? 'light' : 'dark';
                 localStorage.setItem('theme', this.theme);
                 document.documentElement.setAttribute('data-theme', this.theme);
-                this.updateLogos();
-                
-                // Reload profile avatars if they are defaults
-                if(this.user) this.loadUser(); 
-            },
-
-            // --- HELPERS ---
-            checkInput: function() {
-                const val = document.getElementById('msgInput').value.trim();
-                const hasText = val.length > 0;
-                document.getElementById('btnMic').classList.toggle('hidden', hasText);
-                document.getElementById('btnSend').classList.toggle('hidden', !hasText);
-                
-                const el = document.getElementById('msgInput');
-                el.style.height = 'auto';
-                el.style.height = el.scrollHeight + 'px';
+                this.updateIcons();
+                if(this.user) this.loadUser(); // refresh default avatars
             },
 
             openSearch: () => {
@@ -828,7 +1007,7 @@
                 setTimeout(() => m.classList.add('hidden'), 300);
             },
             logout: () => firebase.auth().signOut().then(() => location.reload()),
-            
+
             saveProfile: async function() {
                 const name = document.getElementById('editName').value;
                 const user = document.getElementById('editUsername').value;
@@ -836,7 +1015,7 @@
                     displayName: name,
                     username: user
                 });
-                alert("Сохранено");
+                showToast("Профиль сохранен");
                 this.closeSettings();
                 this.loadUser();
             },
@@ -851,80 +1030,82 @@
                     this.loadUser();
                 }
                 reader.readAsDataURL(file);
+            },
+            
+            setupUI: function() {
+                document.getElementById('msgInput').addEventListener('input', () => this.checkInput());
+                document.getElementById('msgInput').addEventListener('keydown', (e) => {
+                    if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.sendMessage(); }
+                });
+
+                document.getElementById('userSearchInput').addEventListener('input', this.debounce(async (e) => {
+                    const term = e.target.value.toLowerCase().replace('@','');
+                    const div = document.getElementById('searchResults');
+                    if(term.length < 3) { div.innerHTML = '<div class="flex items-center justify-center h-24 text-muted text-xs">Введите минимум 3 символа</div>'; return; }
+
+                    const snap = await this.db.collection('users')
+                        .where('username', '>=', term)
+                        .where('username', '<=', term + '\uf8ff')
+                        .limit(5).get();
+
+                    div.innerHTML = '';
+                    if(snap.empty) div.innerHTML = '<div class="flex items-center justify-center h-24 text-muted text-xs">Не найдено</div>';
+
+                    snap.forEach(doc => {
+                        if(doc.id === this.user.uid) return;
+                        const u = doc.data();
+                        const el = document.createElement('div');
+                        el.className = 'flex items-center gap-3 p-3 hover:bg-surface rounded-xl cursor-pointer transition-colors';
+                        const img = u.photoURL || 'https://ui-avatars.com/api/?background=random&name=' + u.displayName;
+                        el.innerHTML = `
+                            <img src="${img}" class="w-10 h-10 rounded-full bg-border object-cover">
+                            <div>
+                                <div class="font-medium text-sm">${u.displayName}</div>
+                                <div class="text-xs text-muted">@${u.username}</div>
+                            </div>
+                        `;
+                        el.onclick = async () => {
+                            // Find existing chat logic
+                            const exist = await this.db.collection('chats').where('participants', 'array-contains', this.user.uid).get();
+                            let found = null;
+                            exist.forEach(d => { if(d.data().participants.includes(doc.id)) found = d.id; });
+
+                            if(found) {
+                                this.openChat(found, u);
+                            } else {
+                                const ref = await this.db.collection('chats').add({
+                                    participants: [this.user.uid, doc.id],
+                                    createdAt: Date.now(),
+                                    lastMessage: null
+                                });
+                                this.openChat(ref.id, u);
+                            }
+                            this.closeSearch();
+                        };
+                        div.appendChild(el);
+                    });
+                }, 500));
+                
+                document.getElementById('filterChatInput').addEventListener('input', (e) => {
+                    const val = e.target.value.toLowerCase();
+                    const items = document.getElementById('chatList').children;
+                    Array.from(items).forEach(item => {
+                        const name = item.innerText.toLowerCase();
+                        item.style.display = name.includes(val) ? 'flex' : 'none';
+                    });
+                });
+
+                document.getElementById('btnGoogle').onclick = () => this.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+            },
+
+            debounce: function(func, wait) {
+                let timeout;
+                return function(...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
             }
         };
-
-        // UI Event Listeners
-        document.getElementById('msgInput').addEventListener('input', () => app.checkInput());
-        document.getElementById('msgInput').addEventListener('keydown', (e) => {
-            if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); app.sendMessage(); }
-        });
-
-        // Search Logic
-        document.getElementById('userSearchInput').addEventListener('input', debounce(async (e) => {
-            const term = e.target.value.toLowerCase().replace('@','');
-            const div = document.getElementById('searchResults');
-            if(term.length < 3) return;
-
-            const snap = await app.db.collection('users')
-                .where('username', '>=', term)
-                .where('username', '<=', term + '\uf8ff')
-                .limit(5).get();
-
-            div.innerHTML = '';
-            snap.forEach(doc => {
-                if(doc.id === app.user.uid) return;
-                const u = doc.data();
-                const el = document.createElement('div');
-                el.className = 'flex items-center gap-3 p-2 hover:bg-surface rounded-lg cursor-pointer transition-colors';
-                const defImg = app.theme === 'dark' ? 'logo_w_nobg.png' : 'logo_b_nobg.png';
-                el.innerHTML = `
-                    <img src="${u.photoURL || defImg}" class="w-10 h-10 rounded-full bg-border object-cover">
-                    <div>
-                        <div class="font-medium text-sm">${u.displayName}</div>
-                        <div class="text-xs text-muted">@${u.username}</div>
-                    </div>
-                `;
-                el.onclick = async () => {
-                    // Create Chat Logic with Strict Rules
-                    const exist = await app.db.collection('chats').where('participants', 'array-contains', app.user.uid).get();
-                    let found = null;
-                    exist.forEach(d => { if(d.data().participants.includes(doc.id)) found = d.id; });
-
-                    if(found) {
-                        app.openChat(found, u);
-                    } else {
-                        const ref = await app.db.collection('chats').add({
-                            participants: [app.user.uid, doc.id],
-                            createdAt: Date.now()
-                        });
-                        app.openChat(ref.id, u);
-                    }
-                    app.closeSearch();
-                };
-                div.appendChild(el);
-            });
-        }, 500));
-
-        // Filter Chats
-        document.getElementById('filterChatInput').addEventListener('input', (e) => {
-            const val = e.target.value.toLowerCase();
-            const items = document.getElementById('chatList').children;
-            Array.from(items).forEach(item => {
-                const name = item.innerText.toLowerCase();
-                item.style.display = name.includes(val) ? 'flex' : 'none';
-            });
-        });
-
-        document.getElementById('btnGoogle').onclick = () => app.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-
-        function debounce(func, wait) {
-            let timeout;
-            return function(...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
-            };
-        }
 
         // --- START ---
         app.init();
