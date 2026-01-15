@@ -14,10 +14,10 @@
     <!-- Icons: Lucide (Minimalist) -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"></script>
+    <!-- Firebase SDKs (COMPAT VERSIONS - Critical for 'firebase is not defined' fix) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
     <script>
         tailwind.config = {
@@ -45,7 +45,6 @@
                     animation: {
                         'fade-in': 'fadeIn 0.5s ease-out forwards',
                         'slide-up': 'slideUp 0.4s ease-out forwards',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     },
                     keyframes: {
                         fadeIn: {
@@ -63,30 +62,21 @@
     </script>
 
     <style>
-        /* Global Reset & Custom Scrollbar */
+        /* Global Reset */
         body {
             background-color: #000000;
             color: #ffffff;
-            overflow: hidden; /* Prevent body scroll, use containers */
+            overflow: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
         /* Minimalist Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
 
-        /* Glassmorphism Utilities */
+        /* Glassmorphism */
         .glass {
             background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(20px);
@@ -99,16 +89,6 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* Floating Animation Class */
-        .floating {
-            animation: float 6s ease-in-out infinite;
-        }
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
         }
 
         /* Loader */
@@ -158,6 +138,7 @@
                 
                 <button id="googleLoginBtn" class="group relative overflow-hidden rounded-full bg-white text-black px-8 py-4 font-medium transition-all hover:scale-105 active:scale-95 w-full flex items-center justify-center gap-3">
                     <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors"></div>
+                    <!-- Google SVG -->
                     <svg class="w-5 h-5" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                         <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -166,14 +147,14 @@
                     </svg>
                     <span>Войти через Google</span>
                 </button>
-                <div id="loginError" class="text-red-400 text-xs hidden text-center mt-2"></div>
+                <div id="loginError" class="text-red-400 text-xs hidden text-center mt-2 font-mono bg-red-900/20 p-2 rounded"></div>
             </div>
         </div>
 
-        <!-- MAIN INTERFACE (Hidden by default) -->
+        <!-- MAIN INTERFACE -->
         <div id="mainInterface" class="w-full h-full flex opacity-0 pointer-events-none transition-opacity duration-700">
             
-            <!-- SIDEBAR (Chat List) -->
+            <!-- SIDEBAR -->
             <div class="hidden md:flex w-80 h-full glass border-r border-white/10 flex-col z-20">
                 <div class="p-6 border-b border-white/5 flex justify-between items-center">
                     <h2 class="text-xl font-medium tracking-tight">Chats</h2>
@@ -182,7 +163,6 @@
                     </button>
                 </div>
                 
-                <!-- Search (Visual) -->
                 <div class="px-4 py-4">
                     <div class="bg-mono-900 rounded-xl flex items-center px-4 py-2.5 border border-white/5 focus-within:border-white/30 transition-colors">
                         <i data-lucide="search" class="w-4 h-4 text-mono-500 mr-3"></i>
@@ -190,32 +170,17 @@
                     </div>
                 </div>
 
-                <!-- Chat List Items -->
-                <div class="flex-1 overflow-y-auto px-2 space-y-1" id="chatList">
-                    <!-- Active Chat (Global) -->
+                <div class="flex-1 overflow-y-auto px-2 space-y-1">
                     <div class="p-3 rounded-xl bg-white/10 border border-white/5 cursor-pointer flex gap-3 items-center group">
                         <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-gray-700 to-black border border-white/20 flex items-center justify-center text-lg relative overflow-hidden">
                             <span class="z-10">🌍</span>
-                            <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         </div>
                         <div class="flex-1 overflow-hidden">
                             <div class="flex justify-between items-baseline mb-0.5">
                                 <h3 class="font-medium text-white text-sm truncate">Общий эфир</h3>
-                                <span class="text-xs text-mono-500">Сейчас</span>
+                                <span class="text-xs text-mono-500">Live</span>
                             </div>
-                            <p class="text-xs text-mono-400 truncate">Нажмите, чтобы присоединиться...</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Mock Chats (For Design) -->
-                    <div class="p-3 rounded-xl hover:bg-white/5 cursor-pointer flex gap-3 items-center transition-colors opacity-50">
-                        <div class="w-12 h-12 rounded-full bg-mono-800 flex items-center justify-center text-sm border border-white/5">AI</div>
-                        <div class="flex-1">
-                            <div class="flex justify-between items-baseline mb-0.5">
-                                <h3 class="font-medium text-mono-300 text-sm">System</h3>
-                                <span class="text-xs text-mono-600">12:00</span>
-                            </div>
-                            <p class="text-xs text-mono-600 truncate">Добро пожаловать в minimum.</p>
+                            <p class="text-xs text-mono-400 truncate">Пространство для общения</p>
                         </div>
                     </div>
                 </div>
@@ -223,7 +188,6 @@
 
             <!-- CHAT AREA -->
             <div class="flex-1 h-full flex flex-col relative bg-black/50">
-                <!-- Mobile Header -->
                 <div class="md:hidden glass p-4 flex justify-between items-center z-30 border-b border-white/10">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black font-bold text-xs">M</div>
@@ -234,16 +198,12 @@
                     </button>
                 </div>
 
-                <!-- Messages Container -->
                 <div id="messagesContainer" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 scroll-smooth">
-                    <!-- Loading State -->
                     <div id="messagesLoader" class="flex justify-center items-center h-full">
                         <div class="loader ease-linear rounded-full border-2 border-t-2 border-gray-200 h-6 w-6"></div>
                     </div>
-                    <!-- Messages will be injected here -->
                 </div>
 
-                <!-- Input Area -->
                 <div class="p-4 md:p-6 z-30">
                     <div class="glass-light rounded-3xl p-1.5 flex items-end gap-2 shadow-2xl relative transition-all duration-300 focus-within:ring-1 focus-within:ring-white/20 focus-within:bg-black/80">
                         <button class="p-3 text-mono-400 hover:text-white transition-colors rounded-full hover:bg-white/10 shrink-0">
@@ -260,11 +220,10 @@
     </div>
 
     <script>
-        // --- 1. CONFIGURATION & SETUP ---
-        // Инициализация иконок
+        // --- SETUP ---
         lucide.createIcons();
 
-        // UPDATED: Конфигурация Firebase проекта "minimum"
+        // 1. FIREBASE CONFIG (YOUR CREDENTIALS)
         const firebaseConfig = {
           apiKey: "AIzaSyDuP_aYZpqJ-Y8LINCIywCFw3G2ZYVExv4",
           authDomain: "msgr-minimum.firebaseapp.com",
@@ -276,46 +235,35 @@
         };
 
         let app, auth, db, user;
-        
-        // --- FIREBASE LOGIC ---
+
+        // --- 2. LOGIC ---
         const initFirebase = () => {
             try {
-                // Инициализация с твоим конфигом
-                // Проверка на дублирующую инициализацию
+                if (typeof firebase === 'undefined') {
+                    throw new Error("Firebase SDK not loaded. Check internet connection.");
+                }
                 if (!firebase.apps.length) {
                     app = firebase.initializeApp(firebaseConfig);
                 } else {
                     app = firebase.app();
                 }
-                
                 auth = firebase.auth();
                 db = firebase.firestore();
-                
-                // Включаем оффлайн персистентность, если это возможно (кэш)
-                db.enablePersistence().catch(err => {
-                    if (err.code == 'failed-precondition') {
-                         console.log("Persistence failed: Multiple tabs open");
-                    } else if (err.code == 'unimplemented') {
-                         console.log("Persistence not supported by browser");
-                    }
-                });
-
-                console.log("Firebase Initialized: msgr-minimum");
+                console.log("Firebase Initialized Successfully");
                 return true;
             } catch (e) {
-                console.error("Firebase Config Error:", e);
-                document.getElementById('loginError').innerText = "Critical Error: " + e.message;
-                document.getElementById('loginError').classList.remove('hidden');
+                console.error("Firebase Init Error:", e);
+                const errDiv = document.getElementById('loginError');
+                errDiv.innerText = "Error: " + e.message;
+                errDiv.classList.remove('hidden');
                 return false;
             }
         };
 
-        // --- 2. CANVAS ANIMATION (ANTIGRAVITY) ---
         const initCanvas = () => {
             const canvas = document.getElementById('bgCanvas');
             const ctx = canvas.getContext('2d');
-            let width, height;
-            let particles = [];
+            let width, height, particles = [];
 
             const resize = () => {
                 width = canvas.width = window.innerWidth;
@@ -326,23 +274,19 @@
                 constructor() {
                     this.x = Math.random() * width;
                     this.y = Math.random() * height;
-                    this.vx = (Math.random() - 0.5) * 0.5; // Slow movement
+                    this.vx = (Math.random() - 0.5) * 0.5;
                     this.vy = (Math.random() - 0.5) * 0.5;
                     this.size = Math.random() * 2 + 1;
                     this.alpha = Math.random() * 0.5 + 0.1;
                 }
-
                 update() {
                     this.x += this.vx;
                     this.y += this.vy;
-
-                    // Wrap around screen
                     if (this.x < 0) this.x = width;
                     if (this.x > width) this.x = 0;
                     if (this.y < 0) this.y = height;
                     if (this.y > height) this.y = 0;
                 }
-
                 draw() {
                     ctx.beginPath();
                     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -353,30 +297,24 @@
 
             const initParticles = () => {
                 particles = [];
-                const count = Math.min((width * height) / 15000, 100); // Responsive count
-                for (let i = 0; i < count; i++) {
-                    particles.push(new Particle());
-                }
+                const count = Math.min((width * height) / 15000, 100);
+                for (let i = 0; i < count; i++) particles.push(new Particle());
             };
 
             const animate = () => {
                 ctx.clearRect(0, 0, width, height);
-                
-                // Draw connections
                 for (let i = 0; i < particles.length; i++) {
                     const p = particles[i];
                     p.update();
                     p.draw();
-
                     for (let j = i + 1; j < particles.length; j++) {
                         const p2 = particles[j];
                         const dx = p.x - p2.x;
                         const dy = p.y - p2.y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-
-                        if (distance < 150) {
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 150) {
                             ctx.beginPath();
-                            ctx.strokeStyle = `rgba(255, 255, 255, ${(150 - distance) / 150 * 0.15})`;
+                            ctx.strokeStyle = `rgba(255, 255, 255, ${(150 - dist) / 150 * 0.15})`;
                             ctx.lineWidth = 0.5;
                             ctx.moveTo(p.x, p.y);
                             ctx.lineTo(p2.x, p2.y);
@@ -387,17 +325,11 @@
                 requestAnimationFrame(animate);
             };
 
-            window.addEventListener('resize', () => {
-                resize();
-                initParticles();
-            });
-            
-            resize();
-            initParticles();
-            animate();
+            window.addEventListener('resize', () => { resize(); initParticles(); });
+            resize(); initParticles(); animate();
         };
 
-        // --- 3. UI LOGIC & STATE ---
+        // --- UI ---
         const ui = {
             loginScreen: document.getElementById('loginScreen'),
             mainInterface: document.getElementById('mainInterface'),
@@ -408,27 +340,22 @@
             loader: document.getElementById('messagesLoader')
         };
 
-        // Helper to format time
-        const formatTime = (timestamp) => {
-            if (!timestamp) return '';
-            const date = new Date(timestamp);
-            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        };
+        const escapeHtml = (unsafe) => {
+            return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
 
-        // Render Message
         const renderMessage = (msg, isOwn) => {
             const div = document.createElement('div');
             div.className = `flex w-full mb-4 opacity-0 animate-slide-up ${isOwn ? 'justify-end' : 'justify-start'}`;
             
-            // Avatar for others
             const avatarHtml = !isOwn ? 
                 `<div class="w-8 h-8 rounded-full bg-mono-800 border border-white/10 flex items-center justify-center text-xs text-white mr-2 shrink-0 overflow-hidden">
                     ${msg.photoURL ? `<img src="${msg.photoURL}" class="w-full h-full object-cover">` : (msg.displayName?.[0] || '?')}
                  </div>` : '';
 
-            // Bubble
             const bubbleClass = isOwn ? 'msg-own' : 'msg-other';
             const statusIcon = isOwn ? '<i data-lucide="check-check" class="w-3 h-3 ml-1 opacity-70"></i>' : '';
+            const timeStr = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
 
             div.innerHTML = `
                 ${avatarHtml}
@@ -436,55 +363,30 @@
                     ${!isOwn ? `<p class="text-[10px] text-mono-400 mb-0.5">${msg.displayName || 'Anon'}</p>` : ''}
                     <p class="text-sm md:text-base leading-relaxed break-words whitespace-pre-wrap">${escapeHtml(msg.text)}</p>
                     <div class="flex items-center justify-end mt-1 gap-1">
-                        <span class="text-[10px] ${isOwn ? 'text-black/50' : 'text-white/30'}">${formatTime(msg.timestamp)}</span>
+                        <span class="text-[10px] ${isOwn ? 'text-black/50' : 'text-white/30'}">${timeStr}</span>
                         ${isOwn ? statusIcon : ''}
                     </div>
                 </div>
             `;
-            
             ui.msgContainer.appendChild(div);
-            lucide.createIcons(); // Refresh icons in new message
-            scrollToBottom();
+            lucide.createIcons();
+            ui.msgContainer.scrollTo({ top: ui.msgContainer.scrollHeight, behavior: 'smooth' });
         };
 
-        // Auto-scroll logic
-        const scrollToBottom = () => {
-            ui.msgContainer.scrollTo({
-                top: ui.msgContainer.scrollHeight,
-                behavior: 'smooth'
-            });
-        };
-
-        // Escape HTML to prevent XSS
-        const escapeHtml = (unsafe) => {
-            return unsafe
-                 .replace(/&/g, "&amp;")
-                 .replace(/</g, "&lt;")
-                 .replace(/>/g, "&gt;")
-                 .replace(/"/g, "&quot;")
-                 .replace(/'/g, "&#039;");
-        }
-
-        // --- 4. APP LOGIC ---
-
+        // --- MAIN APP ---
         const runApp = () => {
             if (!initFirebase()) return;
             initCanvas();
 
-            // Auth Listener
             auth.onAuthStateChanged((currentUser) => {
                 user = currentUser;
                 if (user) {
-                    // Logged In
                     ui.loginScreen.classList.add('opacity-0', 'pointer-events-none');
                     setTimeout(() => ui.loginScreen.style.display = 'none', 500);
-                    
                     ui.mainInterface.classList.remove('opacity-0', 'pointer-events-none');
                     ui.mainInterface.classList.add('opacity-100');
-                    
                     loadMessages();
                 } else {
-                    // Logged Out
                     ui.loginScreen.style.display = 'flex';
                     ui.loginScreen.classList.remove('opacity-0', 'pointer-events-none');
                     ui.mainInterface.classList.add('opacity-0', 'pointer-events-none');
@@ -494,7 +396,6 @@
                 }
             });
 
-            // Login Action
             ui.loginBtn.addEventListener('click', async () => {
                 const provider = new firebase.auth.GoogleAuthProvider();
                 try {
@@ -502,76 +403,51 @@
                 } catch (error) {
                     console.error("Login Failed", error);
                     const errDiv = document.getElementById('loginError');
-                    // Обработка типичных ошибок
-                    let msg = "Ошибка входа: " + error.message;
-                    if (error.code === 'auth/popup-closed-by-user') msg = "Вход отменен пользователем";
-                    if (error.code === 'auth/cancelled-popup-request') msg = "Запрос отменен";
-                    
-                    errDiv.innerText = msg;
+                    errDiv.innerText = "Error: " + error.message;
                     errDiv.classList.remove('hidden');
                 }
             });
 
-            // Logout Actions
             const logout = () => auth.signOut();
             document.getElementById('logoutBtn')?.addEventListener('click', logout);
             document.getElementById('mobileLogoutBtn')?.addEventListener('click', logout);
 
-            // Message Loading (Realtime)
             let unsubscribe;
             const loadMessages = () => {
                 if (unsubscribe) unsubscribe();
-                
-                // Используем коллекцию 'messages' в корне или под 'chats/general'
-                // Для твоего проекта используем чистый путь:
+                // Путь к коллекции сообщений
                 const messagesRef = db.collection('chats').doc('general').collection('messages');
 
                 unsubscribe = messagesRef.onSnapshot((snapshot) => {
                     ui.loader.remove();
-                    
                     const rawData = [];
                     snapshot.forEach(doc => rawData.push({ id: doc.id, ...doc.data() }));
-                    
-                    // Сортировка на клиенте (самый безопасный вариант без индексов)
                     rawData.sort((a, b) => a.timestamp - b.timestamp);
 
                     ui.msgContainer.innerHTML = '';
-                    
                     if (rawData.length === 0) {
-                        ui.msgContainer.innerHTML = `
-                            <div class="h-full flex flex-col items-center justify-center text-mono-600 opacity-50">
-                                <i data-lucide="message-square" class="w-12 h-12 mb-2"></i>
-                                <p>Чат пуст. Напиши первым.</p>
-                            </div>
-                        `;
-                        lucide.createIcons();
+                        ui.msgContainer.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-mono-600 opacity-50"><p>Сообщений нет</p></div>`;
                     } else {
                         rawData.forEach(msg => renderMessage(msg, msg.uid === user.uid));
                     }
                 }, (error) => {
                     console.error("Firestore Error:", error);
-                    // Если ошибка прав доступа
                     if (error.code === 'permission-denied') {
-                         ui.msgContainer.innerHTML = `<div class="text-red-500 text-center mt-10">Нет доступа к чату.<br>Проверь Security Rules в Firebase Console.</div>`;
+                        ui.msgContainer.innerHTML = `<div class="text-red-500 text-center mt-10 p-4">Ошибка доступа.<br>Проверьте вкладку "Rules" в Firebase Console.</div>`;
                     }
                 });
             };
 
-            // Send Message
             const sendMessage = async () => {
                 const text = ui.msgInput.value.trim();
                 if (!text || !user) return;
-
                 ui.msgInput.value = '';
                 ui.sendBtn.disabled = true;
                 ui.sendBtn.classList.add('opacity-50', 'cursor-not-allowed');
                 ui.msgInput.style.height = 'auto';
 
-                // Тот же путь, что и при чтении
-                const messagesRef = db.collection('chats').doc('general').collection('messages');
-
                 try {
-                    await messagesRef.add({
+                    await db.collection('chats').doc('general').collection('messages').add({
                         text: text,
                         uid: user.uid,
                         displayName: user.displayName,
@@ -580,28 +456,17 @@
                     });
                 } catch (e) {
                     console.error("Send Error", e);
-                    alert("Ошибка отправки: " + e.message);
-                    // Восстанавливаем кнопку при ошибке
-                    ui.sendBtn.disabled = false;
-                    ui.sendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    alert("Ошибка отправки.");
                 }
             };
 
-            // Input Handling
             ui.sendBtn.addEventListener('click', sendMessage);
             ui.msgInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
+                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
             });
-
             ui.msgInput.addEventListener('input', function() {
-                // Auto resize textarea
                 this.style.height = 'auto';
                 this.style.height = (this.scrollHeight) + 'px';
-                
-                // Toggle button state
                 if (this.value.trim().length > 0) {
                     ui.sendBtn.disabled = false;
                     ui.sendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
@@ -612,13 +477,11 @@
             });
         };
 
-        // Start
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', runApp);
         } else {
             runApp();
         }
-
     </script>
 </body>
-  </html>
+</html>
