@@ -3,15 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>minimum</title>
+    <title>Minimum ID</title>
     
+    <!-- PWA Settings -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
+    
+    <link rel="icon" type="image/png" href="https://github.com/XtraDamage/minimum/blob/main/logo_w_blackbg.png?raw=true">
+    <link rel="apple-touch-icon" href="https://github.com/XtraDamage/minimum/blob/main/logo_w_blackbg.png?raw=true">
+
+    <!-- Web App Manifest (Inline) -->
+    <link rel="manifest" href='data:application/manifest+json,{
+        "name": "Minimum",
+        "short_name": "Minimum",
+        "start_url": ".",
+        "display": "standalone",
+        "background_color": "#000000",
+        "theme_color": "#000000",
+        "icons": [{
+            "src": "https://github.com/XtraDamage/minimum/blob/main/logo_w_blackbg.png?raw=true",
+            "sizes": "512x512",
+            "type": "image/png"
+        }]
+    }'>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Icons (Lucide & Google) -->
+    <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Firebase SDKs (Compat for easier prototyping) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -22,7 +46,7 @@
             theme: {
                 extend: {
                     fontFamily: { 
-                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                        sans: ['Inter', '-apple-system', 'system-ui', 'sans-serif'],
                         mono: ['JetBrains Mono', 'monospace'],
                     },
                     colors: {
@@ -43,17 +67,10 @@
                     animation: {
                         'enter': 'enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                         'slide-in': 'slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     },
                     keyframes: {
-                        enter: { 
-                            '0%': { opacity: '0', transform: 'scale(0.96) translateY(10px)' }, 
-                            '100%': { opacity: '1', transform: 'scale(1) translateY(0)' } 
-                        },
-                        slideIn: { 
-                            '0%': { transform: 'translateX(20px)', opacity: '0' }, 
-                            '100%': { transform: 'translateX(0)', opacity: '1' } 
-                        }
+                        enter: { '0%': { opacity: '0', transform: 'scale(0.96) translateY(10px)' }, '100%': { opacity: '1', transform: 'scale(1) translateY(0)' } },
+                        slideIn: { '0%': { transform: 'translateX(20px)', opacity: '0' }, '100%': { transform: 'translateX(0)', opacity: '1' } }
                     }
                 }
             }
@@ -63,167 +80,97 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap');
 
-        /* THEMES */
+        /* VARIABLES */
         :root[data-theme="dark"] {
-            --bg: #000000;
-            --surface: #121212;
-            --surface-hover: #1E1E1E;
-            --border: #262626;
-            --text: #ffffff;
-            --text-muted: #888888;
-            --accent: #ffffff;
-            --accent-fg: #000000;
-            --msg-own-bg: #2d2d2d;
-            --msg-own-text: #ffffff;
-            --msg-other-bg: #121212;
-            --msg-other-text: #ffffff;
+            --bg: #000000; --surface: #161616; --surface-hover: #222; --border: #333;
+            --text: #fff; --text-muted: #888; --accent: #fff; --accent-fg: #000;
+            --msg-own-bg: #262626; --msg-own-text: #fff; --msg-other-bg: #161616; --msg-other-text: #fff;
         }
-
         :root[data-theme="light"] {
-            --bg: #ffffff;
-            --surface: #f4f4f5;
-            --surface-hover: #e4e4e7;
-            --border: #e4e4e7;
-            --text: #09090b;
-            --text-muted: #71717a;
-            --accent: #000000;
-            --accent-fg: #ffffff;
-            --msg-own-bg: #000000;
-            --msg-own-text: #ffffff;
-            --msg-other-bg: #f4f4f5;
-            --msg-other-text: #000000;
+            --bg: #ffffff; --surface: #f3f4f6; --surface-hover: #e5e7eb; --border: #e5e7eb;
+            --text: #000; --text-muted: #6b7280; --accent: #000; --accent-fg: #fff;
+            --msg-own-bg: #000; --msg-own-text: #fff; --msg-other-bg: #f3f4f6; --msg-other-text: #000;
         }
-
         :root[data-theme="oled"] {
-            --bg: #000000;
-            --surface: #000000;
-            --surface-hover: #111111;
-            --border: #333333;
-            --text: #e5e5e5;
-            --text-muted: #666666;
-            --accent: #3b82f6;
-            --accent-fg: #ffffff;
-            --msg-own-bg: #3b82f6;
-            --msg-own-text: #ffffff;
-            --msg-other-bg: #1a1a1a;
-            --msg-other-text: #e5e5e5;
+            --bg: #000000; --surface: #000000; --surface-hover: #111; --border: #222;
+            --text: #e5e5e5; --text-muted: #555; --accent: #3b82f6; --accent-fg: #fff;
+            --msg-own-bg: #3b82f6; --msg-own-text: #fff; --msg-other-bg: #1a1a1a; --msg-other-text: #e5e5e5;
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
-            transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: var(--bg); color: var(--text);
+            transition: background-color 0.3s, color 0.3s;
             -webkit-tap-highlight-color: transparent;
-            overflow: hidden;
-            height: 100dvh; 
-            width: 100vw;
+            overflow: hidden; height: 100dvh; width: 100vw;
         }
 
-        /* UTILS */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* CUSTOM SCROLLBAR */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-        .input-minimal {
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid var(--border);
-            color: var(--text);
-            font-family: 'JetBrains Mono', monospace;
-            border-radius: 0;
-            transition: border-color 0.2s;
-        }
-        .input-minimal:focus {
-            outline: none;
-            border-bottom-color: var(--accent);
+        /* CUSTOM SELECT */
+        select {
+            appearance: none; -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23888888' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center; background-repeat: no-repeat;
+            background-size: 1.5em 1.5em; padding-right: 2.5rem;
         }
 
-        /* MESSAGES */
+        /* MSG BUBBLE */
         .msg-bubble {
-            max-width: 80%;
-            padding: 10px 14px;
-            font-size: 15px;
-            line-height: 1.5;
-            position: relative;
-            word-wrap: break-word;
+            max-width: 80%; padding: 10px 14px; font-size: 15px;
+            border-radius: 18px; position: relative; word-wrap: break-word;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
-        .msg-own {
-            background: var(--msg-own-bg);
-            color: var(--msg-own-text);
-            border-radius: 18px 18px 4px 18px;
-        }
-        .msg-other {
-            background: var(--msg-other-bg);
-            color: var(--msg-other-text);
-            border-radius: 18px 18px 18px 4px;
+        .msg-own { background: var(--msg-own-bg); color: var(--msg-own-text); border-bottom-right-radius: 4px; }
+        .msg-other { background: var(--msg-other-bg); color: var(--msg-other-text); border-bottom-left-radius: 4px; }
+
+        /* REPLY LINE */
+        .reply-line {
+            border-left: 2px solid var(--accent);
+            padding-left: 8px; margin-bottom: 4px;
+            font-size: 12px; opacity: 0.8;
+            border-radius: 2px;
         }
 
-        /* ELEMENTS */
-        .btn-icon {
-            padding: 10px;
-            border-radius: 50%;
-            transition: all 0.2s;
-            color: var(--text-muted);
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .btn-icon:hover {
-            background: var(--surface-hover);
-            color: var(--text);
-        }
+        /* TOGGLE */
+        .toggle-checkbox:checked { right: 0; border-color: var(--accent); }
+        .toggle-checkbox:checked + .toggle-label { background-color: var(--accent); }
+        
         .btn-icon:active { transform: scale(0.92); }
-
-        .logo-small {
-            height: 24px;
-            width: auto;
-            object-fit: contain;
-            filter: grayscale(100%);
-            opacity: 0.8;
-            transition: opacity 0.2s;
-        }
-        .group:hover .logo-small { opacity: 1; filter: none; }
-
-        /* TOGGLE SWITCH */
-        .toggle-checkbox:checked {
-            right: 0;
-            border-color: var(--accent);
-        }
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: var(--accent);
-        }
     </style>
 </head>
-<body class="flex flex-col h-full font-sans antialiased selection:bg-accent selection:text-accent-fg">
+<body class="flex flex-col h-full font-sans antialiased">
 
-    <!-- SPLASH SCREEN -->
+    <!-- SPLASH -->
     <div id="splash" class="fixed inset-0 z-[100] bg-bg flex items-center justify-center transition-opacity duration-700">
-        <img id="splashLogo" src="logo_w_nobg.png" class="w-24 h-24 object-contain animate-pulse-slow">
+        <img id="splashLogo" src="" class="w-24 h-24 object-contain animate-pulse">
     </div>
 
-    <!-- AUTH SCREEN -->
+    <!-- AUTH -->
     <div id="viewAuth" class="fixed inset-0 z-50 bg-bg flex flex-col items-center justify-center hidden opacity-0 transition-opacity duration-500">
         <div class="w-full max-w-sm p-8 flex flex-col items-center animate-enter">
-            <img id="authLogo" src="logo_w_nobg.png" class="w-40 h-40 object-contain mb-8">
+            <img id="authLogo" src="" class="w-32 h-32 object-contain mb-8">
+            <h1 class="text-3xl font-light mb-2 tracking-tighter">minimum</h1>
+            <p class="text-text-muted text-xs mb-10 font-mono tracking-widest uppercase">Identity System v3.0</p>
             
-            <h1 class="text-4xl font-light mb-2 tracking-tighter">minimum</h1>
-            <p class="text-text-muted text-xs mb-12 font-mono tracking-widest uppercase">Identity System v2.1</p>
-            
-            <button id="btnGoogle" class="group relative w-full h-14 bg-surface hover:bg-surface-hover border border-border rounded-xl flex items-center justify-center gap-4 transition-all active:scale-[0.98]">
-                <img src="https://img.icons8.com/color/48/google-logo.png" class="w-6 h-6" alt="Google">
-                <span class="font-medium text-lg">Войти через Google</span>
+            <button id="btnGoogle" class="w-full h-12 bg-surface hover:bg-surface-hover border border-border rounded-xl flex items-center justify-center gap-3 transition-all active:scale-[0.98]">
+                <img src="https://img.icons8.com/color/48/google-logo.png" class="w-5 h-5">
+                <span class="font-medium text-sm" data-i18n="auth_google">Войти через Google</span>
             </button>
-            <p class="mt-8 text-[10px] text-text-muted text-center max-w-[200px] leading-relaxed">
-                Используя вход, вы принимаете политику конфиденциальности Minimum ID.
+            <p class="mt-8 text-[10px] text-text-muted text-center leading-relaxed opacity-60" data-i18n="auth_terms">
+                Входя, вы принимаете условия использования.
             </p>
         </div>
     </div>
 
-    <!-- MAIN APP -->
+    <!-- APP -->
     <div id="viewApp" class="flex-1 flex overflow-hidden relative opacity-0 transition-opacity duration-500">
         
         <!-- SIDEBAR -->
-        <div id="sidebar" class="w-full md:w-[400px] bg-bg border-r border-border flex flex-col h-full z-10 transition-transform duration-300 absolute md:relative">
-            
+        <div id="sidebar" class="w-full md:w-[380px] bg-bg border-r border-border flex flex-col h-full z-10 transition-transform duration-300 absolute md:relative">
             <!-- Header -->
             <div class="h-16 px-4 flex items-center justify-between border-b border-border bg-bg/95 backdrop-blur sticky top-0 z-20">
                 <div class="flex items-center gap-3 cursor-pointer group" onclick="openSettings()">
@@ -231,26 +178,25 @@
                         <img id="myAvatar" class="w-9 h-9 rounded-full bg-surface object-cover border border-border group-hover:border-accent transition-colors">
                         <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-bg"></div>
                     </div>
-                    <img id="headerLogo" src="logo_w_nobg.png" class="logo-small hidden md:block">
+                    <img id="headerLogo" src="" class="h-6 w-auto object-contain hidden md:block opacity-80">
                 </div>
-                <div class="flex gap-1 items-center">
-                    <img src="logo_w_nobg.png" class="w-6 h-6 object-contain md:hidden opacity-50 mr-2"> <!-- Mobile Logo -->
-                    <button class="btn-icon" id="btnNewChat"><i data-lucide="edit-3" class="w-5 h-5"></i></button>
+                <div class="flex gap-2">
+                    <button class="p-2 text-text-muted hover:text-text transition-colors" id="btnNewChat">
+                        <i data-lucide="edit" class="w-5 h-5"></i>
+                    </button>
                 </div>
             </div>
 
             <!-- Search -->
             <div class="px-4 py-3">
-                <div class="h-11 bg-surface rounded-xl flex items-center px-4 gap-3 focus-within:ring-1 focus-within:ring-accent transition-all">
+                <div class="h-10 bg-surface rounded-xl flex items-center px-4 gap-3 focus-within:ring-1 focus-within:ring-accent transition-all">
                     <i data-lucide="search" class="w-4 h-4 text-text-muted"></i>
-                    <input id="chatSearch" type="text" placeholder="Поиск..." class="bg-transparent border-none outline-none text-sm w-full placeholder-text-muted h-full">
+                    <input id="chatSearch" type="text" data-placeholder="search_ph" placeholder="Поиск..." class="bg-transparent border-none outline-none text-sm w-full h-full text-text placeholder-text-muted">
                 </div>
             </div>
 
             <!-- Chat List -->
-            <div id="chatList" class="flex-1 overflow-y-auto no-scrollbar pb-20 space-y-1 p-2">
-                <!-- Chats injected here -->
-            </div>
+            <div id="chatList" class="flex-1 overflow-y-auto pb-20 p-2 space-y-1"></div>
         </div>
 
         <!-- CHAT VIEW -->
@@ -258,74 +204,99 @@
             
             <!-- Chat Header -->
             <div id="chatHeader" class="h-16 px-4 border-b border-border flex items-center justify-between bg-bg/95 backdrop-blur z-20">
-                <div class="flex items-center gap-3">
-                    <button id="btnBack" class="md:hidden btn-icon -ml-2"><i data-lucide="arrow-left" class="w-6 h-6"></i></button>
-                    <div class="relative">
-                        <img id="chatAvatar" class="w-9 h-9 rounded-full bg-surface object-cover">
-                    </div>
-                    <div class="flex flex-col">
-                        <span id="chatName" class="font-medium text-sm leading-tight">Name</span>
+                <div class="flex items-center gap-3 overflow-hidden">
+                    <button id="btnBack" class="md:hidden -ml-2 p-2 text-text"><i data-lucide="arrow-left" class="w-6 h-6"></i></button>
+                    <img id="chatAvatar" class="w-9 h-9 rounded-full bg-surface object-cover shrink-0">
+                    <div class="flex flex-col overflow-hidden">
+                        <span id="chatName" class="font-medium text-sm truncate">Name</span>
                         <span id="chatStatus" class="text-[10px] text-text-muted uppercase tracking-wider font-medium">offline</span>
                     </div>
                 </div>
-                <div class="flex gap-1">
-                    <button class="btn-icon" id="btnChatMenu"><i data-lucide="more-vertical" class="w-5 h-5"></i></button>
+                <button class="p-2 text-text-muted hover:text-text" id="btnChatMenu"><i data-lucide="more-vertical" class="w-5 h-5"></i></button>
+            </div>
+
+            <!-- Messages -->
+            <div id="messagesArea" class="flex-1 overflow-y-auto p-4 space-y-3 bg-bg relative"></div>
+
+            <!-- Reply/Edit Banner -->
+            <div id="actionBanner" class="hidden px-4 py-2 bg-surface/50 border-t border-border flex justify-between items-center backdrop-blur-sm animate-slide-in">
+                <div class="flex items-center gap-3 overflow-hidden">
+                    <div id="actionIcon" class="text-accent"><i data-lucide="corner-up-left" class="w-4 h-4"></i></div>
+                    <div class="flex flex-col text-xs border-l-2 border-accent pl-2 overflow-hidden">
+                        <span id="actionTitle" class="font-bold text-accent truncate">Reply</span>
+                        <span id="actionText" class="text-text-muted truncate max-w-[200px]">Message text...</span>
+                    </div>
                 </div>
+                <button onclick="app.cancelAction()" class="p-1 hover:bg-surface rounded text-text-muted"><i data-lucide="x" class="w-4 h-4"></i></button>
             </div>
 
-            <!-- Messages Area -->
-            <div id="messagesArea" class="flex-1 overflow-y-auto p-4 space-y-3 no-scrollbar bg-bg relative">
-                <!-- Messages injected here -->
-            </div>
-
-            <!-- Edit Indicator -->
-            <div id="editBar" class="hidden px-4 py-2 bg-surface text-xs flex justify-between items-center border-t border-border animate-slide-in">
-                <span class="text-accent flex items-center gap-2"><i data-lucide="pencil" class="w-3 h-3"></i> Редактирование</span>
-                <button id="btnCancelEdit" class="text-text-muted hover:text-text"><i data-lucide="x" class="w-4 h-4"></i></button>
-            </div>
-
-            <!-- Input Area -->
-            <div class="p-3 md:p-4 bg-bg border-t border-border">
-                <div class="flex items-end gap-2 bg-surface p-2 rounded-2xl border border-border transition-colors hover:border-text-muted/30 focus-within:border-accent">
-                    <button id="btnAttach" class="p-2.5 text-text-muted hover:text-text transition-colors rounded-xl hover:bg-bg"><i data-lucide="plus" class="w-5 h-5"></i></button>
+            <!-- Input -->
+            <div class="p-3 bg-bg border-t border-border">
+                <div class="flex items-end gap-2 bg-surface p-2 rounded-2xl border border-border transition-colors focus-within:border-accent">
+                    <button id="btnAttach" class="p-2.5 text-text-muted hover:text-text transition-colors rounded-xl hover:bg-bg/50"><i data-lucide="plus" class="w-5 h-5"></i></button>
                     <input type="file" id="fileInput" class="hidden" accept="image/*,video/*">
                     
-                    <textarea id="msgInput" rows="1" placeholder="Сообщение..." class="flex-1 bg-transparent border-none outline-none text-[15px] py-2.5 max-h-32 resize-none placeholder-text-muted" style="min-height: 24px;"></textarea>
+                    <textarea id="msgInput" rows="1" data-placeholder="msg_ph" placeholder="Сообщение..." class="flex-1 bg-transparent border-none outline-none text-[15px] py-2.5 max-h-32 resize-none text-text placeholder-text-muted" style="min-height: 24px;"></textarea>
                     
-                    <button id="btnSend" class="p-2.5 bg-accent text-accent-fg rounded-xl transition-all active:scale-90 hover:opacity-90 shadow-lg shadow-accent/20"><i data-lucide="arrow-up" class="w-5 h-5"></i></button>
+                    <button id="btnSend" class="p-2.5 bg-accent text-accent-fg rounded-xl shadow-lg shadow-accent/10 active:scale-95 transition-transform"><i data-lucide="arrow-up" class="w-5 h-5"></i></button>
                 </div>
             </div>
 
             <!-- Empty State -->
             <div id="emptyState" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none md:hidden bg-bg z-0">
-                <img src="logo_w_nobg.png" id="emptyLogo" class="w-16 h-16 opacity-10 mb-4">
-                <span class="text-text-muted text-sm font-mono opacity-50">NO CHAT SELECTED</span>
+                <img src="" id="emptyLogo" class="w-16 h-16 opacity-10 mb-4">
+                <span class="text-text-muted text-xs font-mono opacity-50 uppercase tracking-widest" data-i18n="no_chat">No chat selected</span>
             </div>
         </div>
     </div>
 
     <!-- MODALS -->
 
-    <!-- Chat Options Menu -->
-    <div id="chatMenuModal" class="fixed inset-0 z-50 hidden" onclick="this.classList.add('hidden')">
-        <div class="absolute right-4 top-16 md:right-6 bg-surface border border-border rounded-xl shadow-2xl w-56 overflow-hidden py-1 animate-enter origin-top-right" onclick="event.stopPropagation()">
-            <div class="px-4 py-2 border-b border-border mb-1">
-                <span class="text-[10px] text-text-muted font-mono uppercase tracking-widest">Действия</span>
+    <!-- Msg Options -->
+    <div id="msgMenu" class="fixed inset-0 z-[60] hidden" onclick="this.classList.add('hidden')">
+        <div id="msgMenuContent" class="absolute bg-surface border border-border rounded-xl shadow-2xl py-1 w-48 animate-enter overflow-hidden">
+            <button onclick="app.handleReply()" class="w-full text-left px-4 py-2.5 text-sm hover:bg-surface-hover flex items-center gap-3">
+                <i data-lucide="corner-up-left" class="w-4 h-4"></i> <span data-i18n="act_reply">Ответить</span>
+            </button>
+            <button id="btnCopyMsg" class="w-full text-left px-4 py-2.5 text-sm hover:bg-surface-hover flex items-center gap-3">
+                <i data-lucide="copy" class="w-4 h-4"></i> <span data-i18n="act_copy">Копировать</span>
+            </button>
+            
+            <div id="ownMsgActions" class="hidden">
+                <div class="h-px bg-border my-1"></div>
+                <button onclick="app.handleEdit()" class="w-full text-left px-4 py-2.5 text-sm hover:bg-surface-hover flex items-center gap-3">
+                    <i data-lucide="pencil" class="w-4 h-4"></i> <span data-i18n="act_edit">Изменить</span>
+                </button>
+                <button onclick="app.handleDeleteMsg()" class="w-full text-left px-4 py-2.5 text-sm text-danger hover:bg-danger/10 flex items-center gap-3">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i> <span data-i18n="act_delete">Удалить</span>
+                </button>
             </div>
-            <button onclick="app.clearChat(false)" class="w-full text-left px-4 py-2.5 text-sm hover:bg-surface-hover flex items-center gap-3"><i data-lucide="trash-2" class="w-4 h-4"></i> Очистить у меня</button>
-            <button onclick="app.clearChat(true)" class="w-full text-left px-4 py-2.5 text-sm hover:bg-surface-hover flex items-center gap-3"><i data-lucide="trash" class="w-4 h-4"></i> Очистить у всех</button>
-            <div class="h-px bg-border my-1"></div>
-            <button onclick="app.deleteChat()" class="w-full text-left px-4 py-2.5 text-sm text-danger hover:bg-danger/10 flex items-center gap-3"><i data-lucide="x-circle" class="w-4 h-4"></i> Удалить чат</button>
         </div>
     </div>
 
-    <!-- New Chat Modal -->
-    <div id="searchModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-start justify-center pt-24 opacity-0 transition-opacity duration-200" onclick="if(event.target === this) closeSearch()">
-        <div class="w-full max-w-md bg-bg border border-border rounded-2xl shadow-2xl overflow-hidden mx-4 transform transition-all scale-95 duration-200" id="searchModalContent">
+    <!-- Chat Options -->
+    <div id="chatMenuModal" class="fixed inset-0 z-50 hidden" onclick="this.classList.add('hidden')">
+        <div class="absolute right-4 top-16 md:right-6 bg-surface border border-border rounded-xl shadow-2xl w-56 py-1 animate-enter" onclick="event.stopPropagation()">
+            <button onclick="app.clearChat(false)" class="w-full text-left px-4 py-3 text-sm hover:bg-surface-hover flex items-center gap-3">
+                <i data-lucide="trash" class="w-4 h-4"></i> <span data-i18n="opt_clear_me">Очистить (у меня)</span>
+            </button>
+            <button onclick="app.clearChat(true)" class="w-full text-left px-4 py-3 text-sm hover:bg-surface-hover flex items-center gap-3">
+                <i data-lucide="trash-2" class="w-4 h-4"></i> <span data-i18n="opt_clear_all">Очистить (у всех)</span>
+            </button>
+            <div class="h-px bg-border my-1"></div>
+            <button onclick="app.deleteChat()" class="w-full text-left px-4 py-3 text-sm text-danger hover:bg-danger/10 flex items-center gap-3">
+                <i data-lucide="x-circle" class="w-4 h-4"></i> <span data-i18n="opt_delete">Удалить чат</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="searchModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex pt-20 justify-center transition-all duration-300 opacity-0" onclick="if(event.target === this) closeSearch()">
+        <div class="w-full max-w-md bg-bg border border-border rounded-2xl shadow-2xl overflow-hidden mx-4 transform transition-all scale-95" id="searchModalContent">
             <div class="flex items-center border-b border-border p-4 gap-3">
                 <i data-lucide="user-plus" class="w-5 h-5 text-text-muted"></i>
-                <input id="userSearchInput" class="flex-1 bg-transparent outline-none h-full text-base placeholder-text-muted" placeholder="Поиск пользователя (@username)...">
-                <button onclick="closeSearch()" class="p-1 hover:bg-surface rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <input id="userSearchInput" class="flex-1 bg-transparent outline-none h-full text-base text-text placeholder-text-muted" data-placeholder="search_user_ph" placeholder="Поиск @username...">
+                <button onclick="closeSearch()" class="p-1 hover:bg-surface rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <div id="searchResults" class="min-h-[100px] max-h-[300px] overflow-y-auto p-2"></div>
         </div>
@@ -333,111 +304,132 @@
 
     <!-- Settings Modal -->
     <div id="settingsModal" class="fixed inset-0 z-50 bg-bg flex flex-col hidden transition-transform duration-300 transform translate-y-full">
-        <div class="h-16 px-4 flex items-center justify-between border-b border-border sticky top-0 bg-bg/95 backdrop-blur z-10">
-            <h2 class="font-medium text-lg flex items-center gap-2">
-                <i data-lucide="settings" class="w-5 h-5"></i> Настройки
-            </h2>
-            <button onclick="closeSettings()" class="btn-icon bg-surface"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <div class="h-16 px-4 flex items-center justify-between border-b border-border bg-bg/95 backdrop-blur z-10 sticky top-0">
+            <h2 class="font-medium text-lg flex items-center gap-2"><i data-lucide="settings" class="w-5 h-5"></i> <span data-i18n="settings_title">Настройки</span></h2>
+            <button onclick="closeSettings()" class="p-2 bg-surface rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
         
         <div class="flex-1 overflow-y-auto p-6 max-w-2xl mx-auto w-full space-y-8 pb-20">
-            
-            <!-- Profile Card -->
+            <!-- Profile -->
             <div class="flex flex-col items-center">
-                <div class="relative w-28 h-28 mb-4 group cursor-pointer">
+                <div class="relative w-24 h-24 mb-4 group cursor-pointer">
                     <img id="settingsAvatar" class="w-full h-full rounded-full object-cover border-4 border-surface shadow-xl">
-                    <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
+                    <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                         <i data-lucide="camera" class="w-8 h-8 text-white"></i>
                     </div>
                     <input type="file" id="avatarUpload" class="absolute inset-0 opacity-0 cursor-pointer" accept="image/*">
                 </div>
-                <div class="text-center w-full">
-                    <input id="editName" type="text" class="text-2xl font-semibold bg-transparent text-center outline-none border-b border-transparent focus:border-accent w-full placeholder-text-muted" placeholder="Ваше имя">
-                    <div class="flex items-center justify-center gap-1 mt-1 text-text-muted">
-                        <span class="opacity-50">@</span>
-                        <input id="editUsername" type="text" class="text-sm font-mono bg-transparent outline-none border-b border-transparent focus:border-accent w-[150px] text-center" placeholder="username">
-                    </div>
+                <input id="editName" type="text" class="text-xl font-semibold bg-transparent text-center outline-none border-b border-transparent focus:border-accent w-full text-text" placeholder="Name">
+                <div class="flex items-center justify-center gap-1 mt-1 text-text-muted">
+                    <span>@</span><input id="editUsername" type="text" class="text-sm font-mono bg-transparent outline-none border-b border-transparent focus:border-accent w-[150px] text-center" placeholder="username">
                 </div>
             </div>
 
             <!-- Appearance -->
-            <div class="space-y-4">
-                <h3 class="text-xs font-mono uppercase tracking-widest text-text-muted ml-1">Внешний вид</h3>
+            <div>
+                <h3 class="text-xs font-mono uppercase tracking-widest text-text-muted ml-1 mb-2" data-i18n="sec_appearance">Внешний вид</h3>
                 <div class="bg-surface rounded-2xl p-4 space-y-4 border border-border">
                     <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium">Тема оформления</span>
-                        <select id="themeSelector" class="bg-bg border border-border rounded-lg text-sm px-3 py-1.5 outline-none focus:border-accent" onchange="app.setTheme(this.value)">
-                            <option value="dark">Тёмная (Default)</option>
-                            <option value="light">Светлая</option>
-                            <option value="oled">OLED (Черная)</option>
+                        <span class="text-sm font-medium" data-i18n="lbl_theme">Тема</span>
+                        <select id="themeSelector" class="bg-bg border border-border rounded-lg text-sm pl-3 py-2 outline-none focus:border-accent text-text w-32" onchange="app.setTheme(this.value)">
+                            <option value="dark">Dark</option>
+                            <option value="light">Light</option>
+                            <option value="oled">OLED</option>
                         </select>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium">Язык</span>
-                        <select id="langSelector" class="bg-bg border border-border rounded-lg text-sm px-3 py-1.5 outline-none focus:border-accent">
+                        <span class="text-sm font-medium" data-i18n="lbl_lang">Язык</span>
+                        <select id="langSelector" class="bg-bg border border-border rounded-lg text-sm pl-3 py-2 outline-none focus:border-accent text-text w-32" onchange="app.setLang(this.value)">
                             <option value="ru">Русский</option>
                             <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="de">Deutsch</option>
                         </select>
                     </div>
                 </div>
             </div>
 
             <!-- Privacy -->
-            <div class="space-y-4">
-                <h3 class="text-xs font-mono uppercase tracking-widest text-text-muted ml-1">Приватность</h3>
-                <div class="bg-surface rounded-2xl p-4 space-y-4 border border-border">
+            <div>
+                <h3 class="text-xs font-mono uppercase tracking-widest text-text-muted ml-1 mb-2" data-i18n="sec_privacy">Приватность</h3>
+                <div class="bg-surface rounded-2xl p-4 border border-border">
                     <div class="flex items-center justify-between">
                         <div class="flex flex-col">
-                            <span class="text-sm font-medium">Показывать статус "В сети"</span>
-                            <span class="text-xs text-text-muted">Другие пользователи видят когда вы онлайн</span>
+                            <span class="text-sm font-medium" data-i18n="lbl_online">Статус "В сети"</span>
+                            <span class="text-xs text-text-muted" data-i18n="lbl_online_desc">Показывать когда я онлайн</span>
                         </div>
-                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                            <input type="checkbox" name="toggle" id="onlineStatusToggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-border checked:border-accent transition-all duration-300" checked/>
-                            <label for="onlineStatusToggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-bg cursor-pointer border border-border"></label>
+                        <div class="relative inline-block w-10 h-6">
+                            <input type="checkbox" id="onlineStatusToggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-border checked:border-accent transition-all duration-300 top-0.5 left-0.5" checked/>
+                            <label for="onlineStatusToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-bg cursor-pointer border border-border"></label>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- About -->
-            <div class="pt-4 border-t border-border">
-                <div class="flex items-center justify-between py-3 cursor-pointer group" onclick="toggleAbout()">
-                    <span class="font-medium text-sm group-hover:text-accent transition-colors">О приложении</span>
-                    <i data-lucide="chevron-right" class="w-4 h-4 text-text-muted group-hover:translate-x-1 transition-transform"></i>
-                </div>
-                <div id="aboutSection" class="hidden text-sm text-text-muted mt-2 p-4 bg-surface rounded-xl border border-border">
-                    <div class="flex items-center gap-3 mb-4">
-                        <img src="logo_w_nobg.png" id="aboutLogo" class="w-10 h-10 object-contain">
-                        <div>
-                            <p class="font-bold text-text">Minimum Messenger</p>
-                            <p class="text-xs font-mono opacity-70">Build 2.4.0 (Stable)</p>
-                        </div>
-                    </div>
-                    <p class="mb-4 text-xs leading-relaxed opacity-80">
-                        Простой, быстрый и красивый мессенджер. 
-                        Разработано с вниманием к деталям.
-                    </p>
-                    <hr class="border-border my-2">
-                    <div class="flex gap-4 mt-2">
-                        <a href="https://icons8.com" target="_blank" class="text-xs hover:text-accent flex items-center gap-1"><i data-lucide="external-link" class="w-3 h-3"></i> Icons8</a>
-                        <a href="#" class="text-xs hover:text-accent">GitHub</a>
-                        <a href="#" class="text-xs hover:text-accent">Правила</a>
-                    </div>
-                </div>
-            </div>
-
-            <button onclick="app.logout()" class="w-full py-4 text-danger font-medium text-sm bg-danger/5 hover:bg-danger/10 border border-danger/20 rounded-xl transition-all mt-4">
-                Выйти из аккаунта
+            
+            <button onclick="app.logout()" class="w-full py-3.5 text-danger font-medium text-sm bg-danger/5 hover:bg-danger/10 border border-danger/20 rounded-xl transition-all" data-i18n="btn_logout">
+                Выйти
             </button>
         </div>
         
         <div class="p-4 border-t border-border flex justify-end bg-bg/95 backdrop-blur z-10">
-            <button onclick="app.saveProfile()" class="bg-accent text-accent-fg px-8 py-3 rounded-xl font-medium shadow-lg shadow-accent/20 hover:opacity-90 active:scale-95 transition-all">Сохранить</button>
+            <button onclick="app.saveProfile()" class="bg-accent text-accent-fg px-8 py-3 rounded-xl font-medium shadow-lg hover:opacity-90 active:scale-95 transition-all" data-i18n="btn_save">Сохранить</button>
         </div>
     </div>
 
     <script>
-        // --- FIREBASE CONFIG ---
+        // --- TRANSLATIONS ---
+        const I18N = {
+            ru: {
+                auth_google: "Войти через Google", auth_terms: "Входя, вы принимаете условия использования.",
+                search_ph: "Поиск...", search_user_ph: "Поиск пользователя (@username)...",
+                msg_ph: "Сообщение...", no_chat: "Чат не выбран",
+                act_reply: "Ответить", act_copy: "Копировать", act_edit: "Изменить", act_delete: "Удалить",
+                opt_clear_me: "Очистить (у меня)", opt_clear_all: "Очистить (у всех)", opt_delete: "Удалить чат",
+                settings_title: "Настройки", sec_appearance: "Внешний вид", sec_privacy: "Приватность",
+                lbl_theme: "Тема", lbl_lang: "Язык", lbl_online: "Статус \"В сети\"", lbl_online_desc: "Виден другим пользователям",
+                btn_logout: "Выйти из аккаунта", btn_save: "Сохранить",
+                user_not_found: "Пользователь не найден", photo: "Фото", video: "Видео"
+            },
+            en: {
+                auth_google: "Sign in with Google", auth_terms: "By signing in, you agree to our Terms.",
+                search_ph: "Search...", search_user_ph: "Search user (@username)...",
+                msg_ph: "Message...", no_chat: "No chat selected",
+                act_reply: "Reply", act_copy: "Copy", act_edit: "Edit", act_delete: "Delete",
+                opt_clear_me: "Clear (Me)", opt_clear_all: "Clear (Everyone)", opt_delete: "Delete Chat",
+                settings_title: "Settings", sec_appearance: "Appearance", sec_privacy: "Privacy",
+                lbl_theme: "Theme", lbl_lang: "Language", lbl_online: "Online Status", lbl_online_desc: "Visible to other users",
+                btn_logout: "Log Out", btn_save: "Save Changes",
+                user_not_found: "User not found", photo: "Photo", video: "Video"
+            },
+            es: {
+                auth_google: "Entrar con Google", auth_terms: "Al entrar, aceptas nuestros Términos.",
+                search_ph: "Buscar...", search_user_ph: "Buscar usuario (@username)...",
+                msg_ph: "Mensaje...", no_chat: "Ningún chat seleccionado",
+                act_reply: "Responder", act_copy: "Copiar", act_edit: "Editar", act_delete: "Eliminar",
+                opt_clear_me: "Limpiar (Yo)", opt_clear_all: "Limpiar (Todos)", opt_delete: "Eliminar Chat",
+                settings_title: "Ajustes", sec_appearance: "Apariencia", sec_privacy: "Privacidad",
+                lbl_theme: "Tema", lbl_lang: "Idioma", lbl_online: "Estado En Línea", lbl_online_desc: "Visible para otros",
+                btn_logout: "Cerrar Sesión", btn_save: "Guardar",
+                user_not_found: "Usuario no encontrado", photo: "Foto", video: "Video"
+            },
+            de: {
+                auth_google: "Mit Google anmelden", auth_terms: "Mit der Anmeldung akzeptieren Sie die AGB.",
+                search_ph: "Suchen...", search_user_ph: "Nutzer suchen (@username)...",
+                msg_ph: "Nachricht...", no_chat: "Kein Chat ausgewählt",
+                act_reply: "Antworten", act_copy: "Kopieren", act_edit: "Bearbeiten", act_delete: "Löschen",
+                opt_clear_me: "Leeren (Ich)", opt_clear_all: "Leeren (Alle)", opt_delete: "Chat löschen",
+                settings_title: "Einstellungen", sec_appearance: "Aussehen", sec_privacy: "Privatsphäre",
+                lbl_theme: "Thema", lbl_lang: "Sprache", lbl_online: "Online-Status", lbl_online_desc: "Sichtbar für andere",
+                btn_logout: "Abmelden", btn_save: "Speichern",
+                user_not_found: "Benutzer nicht gefunden", photo: "Foto", video: "Video"
+            }
+        };
+
+        const LOGOS = {
+            black: "https://github.com/XtraDamage/minimum/blob/main/logo_b_nobg.png?raw=true",
+            white: "https://github.com/XtraDamage/minimum/blob/main/logo_w_nobg.png?raw=true"
+        };
+
         const firebaseConfig = {
           apiKey: "AIzaSyDuP_aYZpqJ-Y8LINCIywCFw3G2ZYVExv4",
           authDomain: "msgr-minimum.firebaseapp.com",
@@ -447,30 +439,29 @@
           appId: "1:583321384135:web:2b9f7cae0f37419341fae2"
         };
 
-        // --- APP LOGIC ---
         const app = {
-            db: null,
-            auth: null,
-            user: null,
-            activeChat: null,
-            activeChatUser: null,
-            listeners: {},
-            theme: 'dark',
-            editingMsgId: null,
+            db: null, auth: null, user: null,
+            activeChat: null, listeners: {},
+            theme: 'dark', lang: 'ru',
+            
+            // Action State
+            action: null, // { type: 'edit'|'reply', id, text, sender }
+            contextMsg: null, // clicked message data
 
             init: async () => {
-                if(typeof firebase === 'undefined') return console.error('Firebase Error');
+                if(typeof firebase === 'undefined') return;
                 try {
                     firebase.initializeApp(firebaseConfig);
                     app.auth = firebase.auth();
                     app.db = firebase.firestore();
                     app.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-                } catch(e) { console.error(e); }
+                } catch(e){}
 
-                // Load Local Settings
-                const savedTheme = localStorage.getItem('theme') || 'dark';
-                app.setTheme(savedTheme);
-                document.getElementById('themeSelector').value = savedTheme;
+                app.lang = localStorage.getItem('lang') || 'ru';
+                app.theme = localStorage.getItem('theme') || 'dark';
+                
+                app.updateUI();
+                app.translate();
 
                 app.auth.onAuthStateChanged(user => {
                     const splash = document.getElementById('splash');
@@ -484,572 +475,356 @@
                         app.showAuth();
                     }
                 });
-
-                app.setupUI();
+                app.setupEvents();
                 lucide.createIcons();
             },
 
+            translate: () => {
+                const dict = I18N[app.lang] || I18N.ru;
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const k = el.getAttribute('data-i18n');
+                    if(dict[k]) el.innerText = dict[k];
+                });
+                document.querySelectorAll('[data-placeholder]').forEach(el => {
+                    const k = el.getAttribute('data-placeholder');
+                    if(dict[k]) el.placeholder = dict[k];
+                });
+                document.getElementById('langSelector').value = app.lang;
+            },
+
+            updateUI: () => {
+                document.documentElement.setAttribute('data-theme', app.theme);
+                document.getElementById('themeSelector').value = app.theme;
+                
+                // Logo logic
+                const isLight = app.theme === 'light';
+                const src = isLight ? LOGOS.black : LOGOS.white;
+                ['splashLogo','authLogo','headerLogo','emptyLogo'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) el.src = src;
+                });
+            },
+
             loadUser: async () => {
-                try {
-                    const docRef = app.db.collection('users').doc(app.user.uid);
-                    const doc = await docRef.get();
-                    
-                    if(!doc.exists) {
-                        const username = 'user_' + Math.floor(Math.random()*100000);
-                        await docRef.set({
-                            displayName: app.user.displayName || 'User',
-                            photoURL: app.user.photoURL,
-                            username: username,
-                            uid: app.user.uid,
-                            createdAt: Date.now(),
-                            settings: { privacy_online: true, lang: 'ru' }
-                        });
-                    }
-                    
-                    const data = doc.data();
-                    const photo = data.photoURL || (app.theme === 'light' ? 'logo_b_nobg.png' : 'logo_w_nobg.png');
-                    
-                    document.getElementById('myAvatar').src = photo;
-                    
-                    // Preload Settings
-                    document.getElementById('settingsAvatar').src = photo;
-                    document.getElementById('editName').value = data.displayName || 'User';
-                    document.getElementById('editUsername').value = data.username || 'user';
-                    if(data.settings?.privacy_online !== undefined) {
-                        document.getElementById('onlineStatusToggle').checked = data.settings.privacy_online;
-                    }
-                    if(data.settings?.lang) {
-                        document.getElementById('langSelector').value = data.settings.lang;
-                    }
-
-                    document.getElementById('viewAuth').classList.add('hidden');
-                    const viewApp = document.getElementById('viewApp');
-                    viewApp.classList.remove('hidden');
-                    // Small delay for smooth entry
-                    requestAnimationFrame(() => viewApp.classList.remove('opacity-0'));
-
-                    app.loadChats();
-                } catch (e) {
-                    console.error("Load user error", e);
+                const ref = app.db.collection('users').doc(app.user.uid);
+                const doc = await ref.get();
+                if(!doc.exists) {
+                    await ref.set({
+                        displayName: app.user.displayName,
+                        photoURL: app.user.photoURL,
+                        username: 'user_'+Math.floor(Math.random()*100000),
+                        uid: app.user.uid,
+                        settings: { lang: 'ru', privacy_online: true }
+                    });
                 }
+                const data = doc.data();
+                if(data.settings?.lang) { app.lang = data.settings.lang; app.translate(); }
+                
+                document.getElementById('myAvatar').src = data.photoURL || LOGOS.white;
+                document.getElementById('settingsAvatar').src = data.photoURL || LOGOS.white;
+                document.getElementById('editName').value = data.displayName;
+                document.getElementById('editUsername').value = data.username;
+                
+                document.getElementById('viewAuth').classList.add('hidden');
+                document.getElementById('viewApp').classList.remove('hidden');
+                setTimeout(()=>document.getElementById('viewApp').classList.remove('opacity-0'), 50);
+                app.loadChats();
             },
 
             loadChats: () => {
-                if(app.listeners.chats) app.listeners.chats(); // Unsubscribe old
-                
+                if(app.listeners.chats) app.listeners.chats();
                 app.listeners.chats = app.db.collection('chats')
                     .where('participants', 'array-contains', app.user.uid)
                     .orderBy('lastMessageTime', 'desc')
                     .onSnapshot(snap => {
                         const list = document.getElementById('chatList');
                         list.innerHTML = '';
-                        
-                        if(snap.empty) {
-                             list.innerHTML = `<div class="text-center mt-10 text-text-muted text-sm opacity-50">Нет чатов.<br>Начните новый!</div>`;
-                             return;
-                        }
-
                         snap.forEach(async doc => {
                             const chat = doc.data();
-                            if(chat.deletedBy && chat.deletedBy.includes(app.user.uid)) return;
-
-                            const otherId = chat.participants.find(uid => uid !== app.user.uid);
-                            // Optimistic UI for rendering, fetch real user data async
-                            // In prod, use a user cache service
-                            let otherUser = { displayName: 'Загрузка...', photoURL: null };
+                            if(chat.deletedBy?.includes(app.user.uid)) return;
+                            const otherId = chat.participants.find(u => u !== app.user.uid);
                             
-                            try {
-                                const uDoc = await app.db.collection('users').doc(otherId).get();
-                                if(uDoc.exists) otherUser = uDoc.data();
-                            } catch(e){}
+                            // Mock fetch user (cached in real app)
+                            let other = { displayName: '...', photoURL: null };
+                            try { other = (await app.db.collection('users').doc(otherId).get()).data(); } catch(e){}
 
                             const div = document.createElement('div');
                             const isActive = app.activeChat === doc.id;
-                            div.className = `p-3 rounded-xl flex items-center gap-3 cursor-pointer transition-all duration-200 border border-transparent ${isActive ? 'bg-surface border-border shadow-sm' : 'hover:bg-surface/50'}`;
+                            div.className = `p-3 rounded-xl flex items-center gap-3 cursor-pointer transition-all border border-transparent ${isActive ? 'bg-surface border-border' : 'hover:bg-surface/50'}`;
                             
-                            const t = chat.lastMessageTime ? new Date(chat.lastMessageTime) : new Date();
-                            const timeStr = `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
-                            
-                            // Last message preview logic
-                            let preview = 'Нет сообщений';
-                            if(chat.lastMessage) {
-                                if(chat.lastMessage.startsWith('data:image')) preview = '<span class="flex items-center gap-1"><i data-lucide="image" class="w-3 h-3"></i> Фото</span>';
-                                else if(chat.lastMessage.startsWith('data:video')) preview = '<span class="flex items-center gap-1"><i data-lucide="video" class="w-3 h-3"></i> Видео</span>';
-                                else preview = chat.lastMessage;
-                            }
-                            if(chat.lastSenderId === app.user.uid) preview = `<span class="text-accent">Вы:</span> ${preview}`;
+                            const msgText = chat.lastMessage || '';
+                            const isMedia = msgText.includes('data:image') || msgText.includes('data:video');
+                            const displayMsg = isMedia ? (msgText.includes('image') ? I18N[app.lang].photo : I18N[app.lang].video) : msgText;
 
                             div.innerHTML = `
-                                <div class="relative">
-                                    <img src="${otherUser.photoURL || 'logo_w_nobg.png'}" class="w-12 h-12 rounded-full bg-surface object-cover border border-border">
-                                    ${isActive ? '<div class="absolute bottom-0 right-0 w-3 h-3 bg-accent rounded-full border-2 border-bg"></div>' : ''}
-                                </div>
+                                <img src="${other.photoURL || LOGOS.white}" class="w-12 h-12 rounded-full bg-surface object-cover border border-border">
                                 <div class="flex-1 min-w-0">
-                                    <div class="flex justify-between items-baseline mb-0.5">
-                                        <h4 class="font-medium text-[15px] truncate text-text">${otherUser.displayName}</h4>
-                                        <span class="text-[11px] text-text-muted font-mono">${timeStr}</span>
+                                    <div class="flex justify-between items-baseline">
+                                        <h4 class="font-medium text-sm truncate text-text">${other.displayName}</h4>
+                                        <span class="text-[10px] text-text-muted opacity-70">${new Date(chat.lastMessageTime).getHours()}:${String(new Date(chat.lastMessageTime).getMinutes()).padStart(2,'0')}</span>
                                     </div>
-                                    <div class="text-[13px] text-text-muted truncate leading-tight opacity-90">
-                                        ${preview}
+                                    <p class="text-xs text-text-muted truncate opacity-80">${chat.lastSenderId === app.user.uid ? '<span class="text-accent">You:</span> ' : ''}${displayMsg}</p>
+                                </div>
+                            `;
+                            div.onclick = () => app.openChat(doc.id, other);
+                            list.appendChild(div);
+                        });
+                    });
+            },
+
+            openChat: (id, user) => {
+                app.activeChat = id;
+                app.cancelAction();
+                
+                // Mobile nav
+                if(window.innerWidth < 768) {
+                    document.getElementById('sidebar').style.transform = 'translateX(-100%)';
+                }
+
+                document.getElementById('chatName').innerText = user.displayName;
+                document.getElementById('chatAvatar').src = user.photoURL || LOGOS.white;
+                document.getElementById('emptyState').classList.add('hidden');
+                app.loadChats(); // refresh active state
+
+                if(app.listeners.msgs) app.listeners.msgs();
+                const area = document.getElementById('messagesArea');
+                area.innerHTML = '';
+
+                app.listeners.msgs = app.db.collection('chats').doc(id).collection('messages')
+                    .orderBy('timestamp','asc')
+                    .onSnapshot(snap => {
+                        area.innerHTML = '';
+                        let lastId = null;
+                        snap.forEach(d => {
+                            const m = d.data();
+                            if(m.deletedFor?.includes(app.user.uid)) return;
+                            
+                            const isOwn = m.senderId === app.user.uid;
+                            const isSeq = lastId === m.senderId;
+                            lastId = m.senderId;
+
+                            const wrap = document.createElement('div');
+                            wrap.className = `flex w-full ${isOwn?'justify-end':'justify-start'} ${isSeq?'mt-1':'mt-4'} animate-slide-in relative group`;
+                            
+                            // Context Menu Trigger
+                            wrap.oncontextmenu = (e) => {
+                                e.preventDefault();
+                                app.openMsgMenu(e, d.id, m, isOwn);
+                            };
+                            // Mobile long press
+                            let pressTimer;
+                            wrap.ontouchstart = () => { pressTimer = setTimeout(() => app.openMsgMenu(null, d.id, m, isOwn), 500); };
+                            wrap.ontouchend = () => clearTimeout(pressTimer);
+
+                            // Reply Content
+                            let replyHtml = '';
+                            if(m.replyTo) {
+                                replyHtml = `
+                                    <div class="mb-1 pl-2 border-l-2 border-accent/50 text-xs opacity-70 cursor-pointer" onclick="document.getElementById('msg-${m.replyTo.id}')?.scrollIntoView({behavior:'smooth'})">
+                                        <div class="font-bold text-accent text-[10px]">${m.replyTo.senderName}</div>
+                                        <div class="truncate max-w-[150px]">${m.replyTo.text}</div>
+                                    </div>`;
+                            }
+
+                            // Main Content
+                            let body = `<span class="whitespace-pre-wrap">${m.text}</span>`;
+                            if(m.type === 'image') body = `<img src="${m.content}" class="rounded-lg max-w-[260px] cursor-pointer" onclick="window.open(this.src)">`;
+                            if(m.type === 'video') body = `<video src="${m.content}" controls class="rounded-lg max-w-[260px]"></video>`;
+
+                            wrap.innerHTML = `
+                                <div class="msg-bubble ${isOwn?'msg-own':'msg-other'}" id="msg-${d.id}">
+                                    ${replyHtml}
+                                    ${body}
+                                    <div class="flex justify-end items-center gap-1 mt-1 opacity-60 text-[9px] font-mono select-none">
+                                        ${m.edited ? '<span>edited</span>' : ''}
+                                        <span>${new Date(m.timestamp).getHours()}:${String(new Date(m.timestamp).getMinutes()).padStart(2,'0')}</span>
+                                        ${isOwn ? '<i data-lucide="check" class="w-3 h-3"></i>' : ''}
                                     </div>
                                 </div>
                             `;
-                            div.onclick = () => app.openChat(doc.id, otherUser);
-                            list.appendChild(div);
-                            lucide.createIcons();
+                            area.appendChild(wrap);
                         });
-                    });
-            },
-
-            openChat: (chatId, user) => {
-                app.activeChat = chatId;
-                app.activeChatUser = user;
-                
-                // Mobile Navigation
-                const sidebar = document.getElementById('sidebar');
-                const chatView = document.getElementById('chatView');
-                
-                if(window.innerWidth < 768) {
-                    sidebar.style.transform = 'translateX(-100%)';
-                    chatView.style.transform = 'translateX(0)';
-                }
-
-                // UI Updates
-                document.getElementById('chatName').innerText = user.displayName;
-                document.getElementById('chatAvatar').src = user.photoURL || 'logo_w_nobg.png';
-                document.getElementById('chatStatus').innerText = user.settings?.privacy_online ? 'online' : 'was recently';
-                document.getElementById('emptyState').classList.add('hidden');
-                
-                // Refresh Chat List highlights
-                app.loadChats();
-
-                // Messages Listener
-                if(app.listeners.msgs) app.listeners.msgs();
-                const container = document.getElementById('messagesArea');
-                container.innerHTML = ''; // loading state
-
-                app.listeners.msgs = app.db.collection('chats').doc(chatId).collection('messages')
-                    .orderBy('timestamp', 'asc')
-                    .onSnapshot(snap => {
-                        container.innerHTML = '';
-                        
-                        let lastSenderId = null;
-
-                        snap.forEach(doc => {
-                            const msg = doc.data();
-                            if(msg.deletedFor && msg.deletedFor.includes(app.user.uid)) return;
-
-                            const isOwn = msg.senderId === app.user.uid;
-                            const isSequence = lastSenderId === msg.senderId;
-                            lastSenderId = msg.senderId;
-
-                            const wrapper = document.createElement('div');
-                            wrapper.className = `flex w-full ${isOwn ? 'justify-end' : 'justify-start'} animate-slide-in ${isSequence ? 'mt-1' : 'mt-4'}`;
-                            wrapper.id = 'msg-' + doc.id;
-
-                            let content = `<span class="whitespace-pre-wrap">${msg.text}</span>`;
-                            
-                            // Image Render
-                            if(msg.type === 'image') {
-                                content = `
-                                    <div class="relative group cursor-pointer" onclick="window.open(this.querySelector('img').src)">
-                                        <img src="${msg.content}" class="rounded-lg max-w-full md:max-w-[280px] object-cover bg-black/20" onload="app.scrollToBottom()">
-                                    </div>`;
-                            }
-                            // Video Render
-                            else if(msg.type === 'video') {
-                                content = `
-                                    <div class="relative max-w-full md:max-w-[300px] rounded-lg overflow-hidden bg-black">
-                                        <video src="${msg.content}" controls class="w-full max-h-[400px]" playsinline></video>
-                                    </div>`;
-                            }
-
-                            const bubble = document.createElement('div');
-                            // Dynamic border radius for sequences
-                            let radiusClass = isOwn ? 'rounded-2xl rounded-tr-sm' : 'rounded-2xl rounded-tl-sm';
-                            if(isSequence) radiusClass = 'rounded-xl';
-
-                            bubble.className = `msg-bubble ${isOwn ? 'msg-own' : 'msg-other'} ${radiusClass} group flex flex-col`;
-                            
-                            // Content
-                            bubble.innerHTML = content;
-
-                            // Metadata & Edit Button
-                            const metaDiv = document.createElement('div');
-                            metaDiv.className = `flex items-center gap-1 justify-end mt-1 select-none`;
-                            
-                            if(isOwn && msg.type === 'text') {
-                                const editBtn = document.createElement('button');
-                                editBtn.className = 'opacity-0 group-hover:opacity-100 transition-opacity p-0.5 text-current/50 hover:text-current';
-                                editBtn.innerHTML = '<i data-lucide="pencil" class="w-3 h-3"></i>';
-                                editBtn.onclick = (e) => { e.stopPropagation(); app.startEdit(doc.id, msg.text); };
-                                metaDiv.appendChild(editBtn);
-                            }
-
-                            const timeSpan = document.createElement('span');
-                            timeSpan.className = 'text-[9px] opacity-60 font-mono';
-                            const date = new Date(msg.timestamp);
-                            timeSpan.innerText = `${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}${msg.edited ? ' • ред.' : ''}`;
-                            
-                            metaDiv.appendChild(timeSpan);
-                            
-                            // Read receipt checkmark (Visual only for demo)
-                            if(isOwn) {
-                                metaDiv.innerHTML += `<i data-lucide="check" class="w-3 h-3 opacity-60 ml-0.5"></i>`;
-                            }
-
-                            bubble.appendChild(metaDiv);
-                            wrapper.appendChild(bubble);
-                            container.appendChild(wrapper);
-                        });
-                        app.scrollToBottom();
                         lucide.createIcons();
+                        area.scrollTop = area.scrollHeight;
                     });
             },
 
-            scrollToBottom: () => {
-                const c = document.getElementById('messagesArea');
-                c.scrollTop = c.scrollHeight;
-            },
-
-            sendMessage: async (type = 'text', content = null) => {
-                if(!app.activeChat) return;
-                
+            sendMessage: async (type='text', content=null) => {
                 const input = document.getElementById('msgInput');
                 const text = input.value.trim();
-
                 if(type === 'text' && !text) return;
-                
-                input.value = '';
-                input.style.height = 'auto'; // Reset height
 
-                // Loading/Sending indicator could go here
-
-                try {
-                    const msgData = {
-                        senderId: app.user.uid,
-                        timestamp: Date.now(),
-                        type: type,
-                        text: type === 'text' ? text : (type === 'image' ? 'Фотография' : 'Видео'),
-                        content: content || null
-                    };
-
-                    const batch = app.db.batch();
-                    const msgRef = app.db.collection('chats').doc(app.activeChat).collection('messages').doc();
-                    batch.set(msgRef, msgData);
-
-                    const chatRef = app.db.collection('chats').doc(app.activeChat);
-                    batch.update(chatRef, {
-                        lastMessage: msgData.text,
-                        lastMessageTime: Date.now(),
-                        lastSenderId: app.user.uid
+                // Handle Edit
+                if(app.action?.type === 'edit') {
+                    await app.db.collection('chats').doc(app.activeChat).collection('messages').doc(app.action.id).update({
+                        text: text, edited: true
                     });
-
-                    await batch.commit();
-                    app.scrollToBottom();
-                } catch(e) {
-                    alert('Ошибка отправки: ' + e.message);
-                }
-            },
-
-            handleFile: (e) => {
-                const file = e.target.files[0];
-                if(!file) return;
-
-                // 2MB Limit for Base64 safety in Firestore Demo
-                if(file.size > 2 * 1024 * 1024) { 
-                    alert('Файл слишком большой для демо-версии (Лимит 2MB). В продакшене используйте Firebase Storage.'); 
-                    return; 
+                    app.cancelAction();
+                    return;
                 }
 
-                const reader = new FileReader();
-                reader.onload = (evt) => {
-                    let type = 'file';
-                    if(file.type.startsWith('image/')) type = 'image';
-                    if(file.type.startsWith('video/')) type = 'video';
-                    
-                    if(type === 'file') { alert('Поддерживаются только фото и видео'); return; }
-                    
-                    app.sendMessage(type, evt.target.result);
+                // Handle Send/Reply
+                const msg = {
+                    senderId: app.user.uid,
+                    timestamp: Date.now(),
+                    type,
+                    text: type==='text' ? text : (type==='image'?'📷 Photo':'🎥 Video'),
+                    content,
+                    replyTo: app.action?.type === 'reply' ? {
+                        id: app.action.id,
+                        text: app.action.text,
+                        senderName: app.action.sender
+                    } : null
                 };
-                reader.readAsDataURL(file);
-                // Clear input
-                e.target.value = '';
-            },
 
-            // --- EDITING ---
-            startEdit: (msgId, text) => {
-                app.editingMsgId = msgId;
-                const input = document.getElementById('msgInput');
-                input.value = text;
-                input.focus();
-                document.getElementById('editBar').classList.remove('hidden');
-                document.getElementById('btnAttach').classList.add('hidden'); // Hide attach during edit
-            },
+                input.value = '';
+                app.cancelAction();
 
-            cancelEdit: () => {
-                app.editingMsgId = null;
-                document.getElementById('msgInput').value = '';
-                document.getElementById('msgInput').style.height = 'auto';
-                document.getElementById('editBar').classList.add('hidden');
-                document.getElementById('btnAttach').classList.remove('hidden');
-            },
-
-            submitEdit: async () => {
-                const text = document.getElementById('msgInput').value.trim();
-                if(!text) return app.cancelEdit();
-                
-                await app.db.collection('chats').doc(app.activeChat).collection('messages').doc(app.editingMsgId).update({
-                    text: text,
-                    edited: true
+                const ref = app.db.collection('chats').doc(app.activeChat);
+                await ref.collection('messages').add(msg);
+                await ref.update({
+                    lastMessage: msg.text,
+                    lastMessageTime: Date.now(),
+                    lastSenderId: app.user.uid
                 });
-                app.cancelEdit();
             },
 
-            // --- HELPERS & ACTIONS ---
-            clearChat: async (everyone) => {
-                if(!app.activeChat || !confirm('Вы уверены? Это действие нельзя отменить.')) return;
+            // --- ACTIONS ---
+            openMsgMenu: (e, id, msg, isOwn) => {
+                app.contextMsg = { id, ...msg, isOwn };
+                const menu = document.getElementById('msgMenu');
+                const content = document.getElementById('msgMenuContent');
                 
-                const msgsRef = app.db.collection('chats').doc(app.activeChat).collection('messages');
-                const snap = await msgsRef.get();
+                document.getElementById('ownMsgActions').classList.toggle('hidden', !isOwn);
                 
-                const batch = app.db.batch();
-                snap.forEach(doc => {
-                    if(everyone) {
-                        batch.delete(doc.ref);
-                    } else {
-                        batch.delete(doc.ref); // В реальном приложении добавляем в массив deletedFor
-                    }
-                });
+                menu.classList.remove('hidden');
                 
-                await batch.commit();
-                document.getElementById('chatMenuModal').classList.add('hidden');
-            },
-
-            deleteChat: async () => {
-                if(!confirm('Удалить чат навсегда?')) return;
-                await app.db.collection('chats').doc(app.activeChat).delete();
-                app.closeChat();
-                document.getElementById('chatMenuModal').classList.add('hidden');
-            },
-
-            setTheme: (theme) => {
-                app.theme = theme;
-                document.documentElement.setAttribute('data-theme', theme);
-                localStorage.setItem('theme', theme);
-                
-                // Dynamic assets
-                const logoW = 'logo_w_nobg.png';
-                const logoB = 'logo_b_nobg.png';
-                const isLight = theme === 'light';
-                
-                const target = isLight ? logoB : logoW;
-                document.getElementById('splashLogo').src = target;
-                document.getElementById('authLogo').src = target;
-                document.getElementById('headerLogo').src = target;
-                document.getElementById('aboutLogo').src = target;
-                document.getElementById('emptyLogo').src = target;
-
-                if(app.user) app.loadUser(); // Refresh placeholder avatar
-            },
-
-            closeChat: () => {
-                app.activeChat = null;
-                const sidebar = document.getElementById('sidebar');
-                const chatView = document.getElementById('chatView');
-                
-                if(window.innerWidth < 768) {
-                    sidebar.style.transform = 'translateX(0)';
-                    chatView.style.transform = 'translateX(100%)';
+                // Position
+                if(e) {
+                    const x = Math.min(e.clientX, window.innerWidth - 200);
+                    const y = Math.min(e.clientY, window.innerHeight - 200);
+                    content.style.left = x + 'px';
+                    content.style.top = y + 'px';
+                } else {
+                    // Center for mobile touch
+                    content.style.left = '50%';
+                    content.style.top = '50%';
+                    content.style.transform = 'translate(-50%, -50%)';
                 }
-                setTimeout(() => {
-                    document.getElementById('chatName').innerText = '';
-                    document.getElementById('emptyState').classList.remove('hidden');
-                }, 300);
             },
 
-            showAuth: () => {
-                document.getElementById('viewAuth').classList.remove('hidden');
-                requestAnimationFrame(() => document.getElementById('viewAuth').classList.remove('opacity-0'));
-                document.getElementById('viewApp').classList.add('hidden');
+            handleReply: () => {
+                const m = app.contextMsg;
+                app.action = { type: 'reply', id: m.id, text: m.text, sender: m.isOwn ? 'You' : document.getElementById('chatName').innerText };
+                
+                document.getElementById('actionBanner').classList.remove('hidden');
+                document.getElementById('actionTitle').innerText = 'Reply to ' + app.action.sender;
+                document.getElementById('actionText').innerText = m.type === 'text' ? m.text : (m.type === 'image' ? 'Photo' : 'Video');
+                document.getElementById('msgInput').focus();
             },
 
+            handleEdit: () => {
+                const m = app.contextMsg;
+                if(m.type !== 'text') return alert('Only text can be edited');
+                app.action = { type: 'edit', id: m.id };
+                
+                document.getElementById('actionBanner').classList.remove('hidden');
+                document.getElementById('actionTitle').innerText = 'Editing';
+                document.getElementById('actionText').innerText = m.text;
+                document.getElementById('msgInput').value = m.text;
+                document.getElementById('msgInput').focus();
+            },
+
+            handleDeleteMsg: async () => {
+                if(!confirm(I18N[app.lang].act_delete + '?')) return;
+                await app.db.collection('chats').doc(app.activeChat).collection('messages').doc(app.contextMsg.id).delete();
+            },
+
+            cancelAction: () => {
+                app.action = null;
+                document.getElementById('actionBanner').classList.add('hidden');
+                document.getElementById('msgInput').value = '';
+            },
+
+            // --- SYSTEM ---
+            setupEvents: () => {
+                document.getElementById('btnAttach').onclick = () => document.getElementById('fileInput').click();
+                document.getElementById('fileInput').onchange = (e) => {
+                    const f = e.target.files[0];
+                    if(!f) return;
+                    const reader = new FileReader();
+                    reader.onload = (ev) => app.sendMessage(f.type.startsWith('video')?'video':'image', ev.target.result);
+                    reader.readAsDataURL(f);
+                };
+                
+                document.getElementById('btnSend').onclick = () => app.sendMessage();
+                document.getElementById('msgInput').onkeydown = (e) => {
+                    if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); app.sendMessage(); }
+                };
+                
+                document.getElementById('btnNewChat').onclick = () => {
+                    const m = document.getElementById('searchModal');
+                    m.classList.remove('hidden');
+                    setTimeout(()=> { m.classList.remove('opacity-0'); document.getElementById('searchModalContent').classList.remove('scale-95'); }, 10);
+                };
+                
+                document.getElementById('userSearchInput').oninput = app.debounce(async (e) => {
+                    const v = e.target.value.toLowerCase().replace('@','');
+                    const div = document.getElementById('searchResults');
+                    if(v.length < 3) { div.innerHTML=''; return; }
+                    
+                    const snap = await app.db.collection('users').orderBy('username').startAt(v).endAt(v+'\uf8ff').limit(5).get();
+                    div.innerHTML = '';
+                    if(snap.empty) div.innerHTML = `<div class="p-4 text-center opacity-50">${I18N[app.lang].user_not_found}</div>`;
+                    
+                    snap.forEach(d => {
+                        const u = d.data();
+                        if(u.uid === app.user.uid) return;
+                        const el = document.createElement('div');
+                        el.className = 'flex items-center gap-3 p-3 hover:bg-surface rounded-xl cursor-pointer';
+                        el.innerHTML = `<img src="${u.photoURL||LOGOS.white}" class="w-8 h-8 rounded-full bg-surface"><div class="text-sm font-medium">${u.displayName}<div class="text-xs text-text-muted">@${u.username}</div></div>`;
+                        el.onclick = async () => {
+                            const q = await app.db.collection('chats').where('participants','array-contains',app.user.uid).get();
+                            let cid = null;
+                            q.forEach(doc => { if(doc.data().participants.includes(u.uid)) cid = doc.id; });
+                            
+                            if(!cid) cid = (await app.db.collection('chats').add({
+                                participants: [app.user.uid, u.uid], createdAt: Date.now(), lastMessageTime: Date.now()
+                            })).id;
+                            
+                            closeSearch();
+                            app.openChat(cid, u);
+                        }
+                        div.appendChild(el);
+                    });
+                }, 500);
+
+                document.getElementById('btnCopyMsg').onclick = () => {
+                    navigator.clipboard.writeText(app.contextMsg.text);
+                    document.getElementById('msgMenu').classList.add('hidden');
+                }
+            },
+
+            setTheme: (t) => { app.theme = t; localStorage.setItem('theme', t); app.updateUI(); },
+            setLang: (l) => { app.lang = l; localStorage.setItem('lang', l); app.translate(); },
             saveProfile: async () => {
                 const name = document.getElementById('editName').value;
                 const username = document.getElementById('editUsername').value;
-                const isOnline = document.getElementById('onlineStatusToggle').checked;
-                const lang = document.getElementById('langSelector').value;
-
-                try {
-                    await app.db.collection('users').doc(app.user.uid).update({
-                        displayName: name,
-                        username: username,
-                        'settings.privacy_online': isOnline,
-                        'settings.lang': lang
-                    });
-                    
-                    // Avatar upload if changed is handled by onchange event separately below, but could be merged
-                    
-                    closeSettings();
-                    // Show a toast or feedback (Simple alert for now)
-                    // alert('Профиль сохранен');
-                } catch(e) {
-                    alert('Ошибка сохранения');
-                }
+                const online = document.getElementById('onlineStatusToggle').checked;
+                await app.db.collection('users').doc(app.user.uid).update({
+                    displayName: name, username, 'settings.privacy_online': online, 'settings.lang': app.lang
+                });
+                closeSettings();
             },
-
             logout: () => app.auth.signOut().then(() => location.reload()),
-
-            setupUI: () => {
-                document.getElementById('btnGoogle').onclick = () => app.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-                
-                // Auto-resize Textarea
-                const input = document.getElementById('msgInput');
-                input.addEventListener('input', function() {
-                    this.style.height = 'auto';
-                    this.style.height = (this.scrollHeight) + 'px';
-                });
-
-                // Send Logic
-                input.addEventListener('keydown', (e) => {
-                    if(e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        if(app.editingMsgId) app.submitEdit();
-                        else app.sendMessage();
-                    }
-                });
-
-                document.getElementById('btnSend').onclick = () => {
-                    if(app.editingMsgId) app.submitEdit();
-                    else app.sendMessage();
-                };
-
-                // Navigation
-                document.getElementById('btnBack').onclick = app.closeChat;
-                document.getElementById('btnChatMenu').onclick = () => document.getElementById('chatMenuModal').classList.remove('hidden');
-                document.getElementById('btnCancelEdit').onclick = app.cancelEdit;
-
-                // File Handling
-                document.getElementById('btnAttach').onclick = () => document.getElementById('fileInput').click();
-                document.getElementById('fileInput').onchange = app.handleFile;
-
-                // Search
-                document.getElementById('btnNewChat').onclick = () => {
-                    const modal = document.getElementById('searchModal');
-                    const content = document.getElementById('searchModalContent');
-                    modal.classList.remove('hidden');
-                    // Animation
-                    requestAnimationFrame(() => {
-                        modal.classList.remove('opacity-0');
-                        content.classList.remove('scale-95');
-                    });
-                    document.getElementById('userSearchInput').focus();
-                };
-                document.getElementById('userSearchInput').oninput = debounce(app.searchUsers, 500);
-
-                // Avatar Upload
-                document.getElementById('avatarUpload').onchange = (e) => {
-                    const file = e.target.files[0];
-                    if(file) {
-                        const reader = new FileReader();
-                        reader.onload = async (ev) => {
-                            await app.db.collection('users').doc(app.user.uid).update({ photoURL: ev.target.result });
-                            document.getElementById('settingsAvatar').src = ev.target.result;
-                            document.getElementById('myAvatar').src = ev.target.result;
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                }
-            },
-
-            searchUsers: async (e) => {
-                const term = e.target.value.toLowerCase().replace('@','');
-                const div = document.getElementById('searchResults');
-                if(term.length < 3) { div.innerHTML = ''; return; }
-
-                try {
-                    // Simple prefix search (In production use Algolia or separate search index)
-                    const snap = await app.db.collection('users')
-                        .orderBy('username')
-                        .startAt(term)
-                        .endAt(term + '\uf8ff')
-                        .limit(5)
-                        .get();
-
-                    div.innerHTML = '';
-                    if(snap.empty) div.innerHTML = '<div class="p-4 text-center text-text-muted text-sm">Пользователь не найден</div>';
-
-                    snap.forEach(doc => {
-                        const u = doc.data();
-                        if(u.uid === app.user.uid) return;
-                        const el = document.createElement('div');
-                        el.className = 'flex items-center gap-3 p-3 hover:bg-surface rounded-xl cursor-pointer transition-colors';
-                        el.innerHTML = `
-                            <img src="${u.photoURL || 'logo_w_nobg.png'}" class="w-10 h-10 rounded-full bg-border object-cover">
-                            <div>
-                                <div class="font-medium text-sm text-text">${u.displayName}</div>
-                                <div class="text-xs text-text-muted">@${u.username}</div>
-                            </div>
-                        `;
-                        el.onclick = async () => {
-                            // Find existing chat or create new
-                            const existSnap = await app.db.collection('chats')
-                                .where('participants', 'array-contains', app.user.uid)
-                                .get();
-                            
-                            let foundId = null;
-                            existSnap.forEach(d => {
-                                const p = d.data().participants;
-                                if(p.includes(u.uid) && p.length === 2) foundId = d.id;
-                            });
-                            
-                            if(!foundId) {
-                                const ref = await app.db.collection('chats').add({
-                                    participants: [app.user.uid, u.uid],
-                                    createdAt: Date.now(),
-                                    lastMessageTime: Date.now()
-                                });
-                                foundId = ref.id;
-                            }
-                            closeSearch();
-                            app.openChat(foundId, u);
-                        };
-                        div.appendChild(el);
-                    });
-                } catch(err) { console.error(err); }
-            }
+            debounce: (f,t) => { let timer; return (...args)=>{ clearTimeout(timer); timer=setTimeout(()=>f(...args),t); } }
         };
 
-        // --- GLOBAL UI HELPERS ---
-        function openSettings() {
-            const m = document.getElementById('settingsModal');
-            m.classList.remove('hidden');
-            requestAnimationFrame(() => m.classList.remove('translate-y-full'));
-        }
-        function closeSettings() {
-            const m = document.getElementById('settingsModal');
-            m.classList.add('translate-y-full');
-            setTimeout(() => m.classList.add('hidden'), 300);
-        }
-        function toggleAbout() {
-            const el = document.getElementById('aboutSection');
-            el.classList.toggle('hidden');
-        }
-        function closeSearch() {
-            const m = document.getElementById('searchModal');
-            m.classList.add('opacity-0');
-            document.getElementById('searchModalContent').classList.add('scale-95');
-            setTimeout(() => m.classList.add('hidden'), 200);
-        }
-        function debounce(func, wait) {
-            let timeout;
-            return function(...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
-            };
-        }
+        // UI Helpers
+        function openSettings() { document.getElementById('settingsModal').classList.remove('hidden'); setTimeout(()=>document.getElementById('settingsModal').classList.remove('translate-y-full'),10); }
+        function closeSettings() { document.getElementById('settingsModal').classList.add('translate-y-full'); setTimeout(()=>document.getElementById('settingsModal').classList.add('hidden'),300); }
+        function closeSearch() { document.getElementById('searchModal').classList.add('opacity-0'); setTimeout(()=>document.getElementById('searchModal').classList.add('hidden'),300); }
 
-        // Init
         document.addEventListener('DOMContentLoaded', app.init);
     </script>
 </body>
